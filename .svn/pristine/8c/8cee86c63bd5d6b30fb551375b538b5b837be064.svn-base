@@ -1,0 +1,12 @@
+from . import therapy_record
+from . import therapy_body_measure
+from . import therapy_prescription
+from . import therapy_record_product
+from . import product_product
+from . import izi_service_card_using
+from . import stock_picking
+from . import body_area
+from . import product_template
+from . import crm_lead
+from . import therapy_prescription_return_product
+

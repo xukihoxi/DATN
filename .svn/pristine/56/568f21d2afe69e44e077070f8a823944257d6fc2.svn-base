@@ -1,0 +1,15 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models
+from odoo.exceptions import except_orm, UserError
+
+
+class DepartmentRateLine(models.Model):
+    _name = 'department.rate.line'
+    _rec_name = 'department_id'
+
+    department_rate_id = fields.Many2one('department.rate')
+    department_id = fields.Many2one('hr.department', string='Department')
+    customer_rate = fields.Selection([(0, 'Normal'), (1, 'Good'), (2, "Excellent"), (3, "No rate")], default=3)
+    customer_comment = fields.Text("Customer Comment")
+    using_id = fields.Many2one('izi.service.card.using')
+

@@ -1,0 +1,1406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="d2994240-897e-461c-b288-597de12c08ca" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="Korea_Spa" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/odoo/addons/website_theme_install/static/src/less/website_theme_install.less">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1425" />
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/odoo/.idea/misc.xml">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/odoo/.idea/modules.xml">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/odoo/.idea/inspectionProfiles/profiles_settings.xml">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/odoo/.idea/workspace.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="254">
+              <caret line="35" column="70" selection-start-line="35" selection-start-column="61" selection-end-line="35" selection-end-column="70" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>self.env['ir.config_parameter'].sudo()</find>
+      <find>sudo().get_param(</find>
+      <find>product_is_in</find>
+      <find>price_unit</find>
+      <find>context=&quot;{</find>
+      <find>default_get</find>
+      <find>def name_search(self</find>
+      <find>.name_search(fields)</find>
+      <find>def name_search(self, name, args=None, operator='ilike', limit=100):</find>
+      <find>def name_search(</find>
+      <find>parent.</find>
+      <find>Eo giữa</find>
+      <find>Measurement  time</find>
+      <find>thành viên</find>
+      <find>team</find>
+      <find>telesale</find>
+      <find>Telesales</find>
+      <find>Over</find>
+      <find>izi_crm_case_form_view_oppor</find>
+      <find>Tính</find>
+      <find>= 'mail.activity'</find>
+      <find>def default_get(</find>
+      <find>view_create_opportunity_simplified</find>
+      <find>mail_activity_view_form_popup</find>
+      <find>nhắc</find>
+      <find>ir.config_parameter</find>
+      <find>period</find>
+      <find>'purchase.report'</find>
+      <find>view_purchase_order_pivot</find>
+      <find>Web Backend v1</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>partner</replace>
+      <replace>therapy</replace>
+      <replace>x_therapy_record_id</replace>
+      <replace />
+      <replace>self</replace>
+      <replace>check_therapy_record</replace>
+      <replace>x_name_barem</replace>
+      <replace>Amount total</replace>
+      <replace>x_barem_id</replace>
+      <replace>qty_max</replace>
+      <replace>uom_id</replace>
+      <replace>amount_total</replace>
+      <replace>products_order</replace>
+      <replace>order_line.product_id.default_code</replace>
+      <replace>level</replace>
+      <replace>age_start</replace>
+      <replace>age_end</replace>
+      <replace>'column_invisible':</replace>
+      <replace>body_area_ids</replace>
+      <replace>service_card_id</replace>
+      <replace>is_massage</replace>
+      <replace>x_is_massage</replace>
+      <replace>is_injection</replace>
+      <replace>get_config_remind</replace>
+      <replace>service_card</replace>
+      <replace>bundle_barem</replace>
+      <replace>therapy.bundle.barem.component</replace>
+      <replace>model_therapy_bundle_barem_component</replace>
+    </replaceStrings>
+    <dirStrings>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_therapy_record\models</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_pos_bundle_therapy\models</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\report_qweb\views</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\report_qweb</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_pos_bundle_therapy\views</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_use_service_card</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_crm_interaction\views</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_crm_interaction\models</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_virtual_money\views</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\stock_inventory_customer</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_crm_interaction</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_pos_bundle_therapy</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_therapy_record</dir>
+      <dir>D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom</dir>
+    </dirStrings>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/odoo/addons_custom/res_partner_custom/__manifest__.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/views/therapy_prescription_view.xml" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/partner_interaction.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/izi_service_card_using.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/therapy_record.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/stock_picking.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/i18n/vi_VN (3) - interation.po" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/i18n/vi_VN.po" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/views/activity_history_views.xml" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/__manifest__.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/crm_sale_program/models/models.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/views/acivity_history_assign_view.xml" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/__manifest__.py" />
+        <option value="$PROJECT_DIR$/odoo/addons/stock/wizard/stock_picking_return.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_pos_crm/models/crm_lead.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/therapy_bundle_barem.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/views/therapy_bundle_barem_view.xml" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/views/pos_order_custom.xml" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/views/pos_order_custom.xml" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_res_permissions/security/ir.model.access.csv" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/therapy_record.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/models/import_therapy.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/body_area.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/views/therapy_record_view.xml" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/i18n/vi_VN.po" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/views/therapy_bundle_view.xml" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/product_product.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/__manifest__.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/product_product.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/views/product_product_view.xml" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/therapy_bundle.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/therapy_record_product.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/views/therapy_record_view.xml" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/models/import_master.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/therapy_prescription.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/pos_order.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/models/__init__.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/views/import_view.xml" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/models/therapy_record.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/activity_history.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/views/therapy_record_view.xml" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_scan_barcode/i18n/vi_VN.po" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/i18n/vi_VN.po" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/i18n/vi_VN.po" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_pos_crm/i18n/vi_VN.po" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_lead/i18n/vi_VN.po" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_lead/views/crm_lead_views.xml" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_lead/models/mail_activity.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_crm_lead/models/__init__.py" />
+        <option value="$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/pos_order.py" />
+        <option value="$PROJECT_DIR$/odoo/requirements.txt" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="950" />
+    <option name="y" value="-10" />
+    <option name="width" value="980" />
+    <option name="height" value="1050" />
+  </component>
+  <component name="ProjectId" id="1clJTQEVytYQEq50eUXyXVGr0fO" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane" />
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="postgresql" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Thienson" />
+    <property name="settings.editor.selected.configurable" value="vcs.Subversion" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order_line.py" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_therapy_record\models" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_therapy_record\views" />
+      <recent name="D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_therapy_record\models" />
+      <recent name="D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\izi_pos_bundle_therapy\views" />
+      <recent name="D:\Odoo\PycharmProjects\Korea_Spa\odoo\addons_custom\res_partner_custom\views" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="odoo-bin" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="Korea_Spa" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/odoo" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/odoo/odoo-bin" />
+      <option name="PARAMETERS" value="--addons-path=&quot;addons,addons_custom&quot; --db_port=&quot;5432&quot; --db_user=&quot;tungpd&quot; --db_password=&quot;12345&quot; --xmlrpc-port=&quot;8082&quot;" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration useDefault="false">C:\Users\hi\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+    <option name="runUnderTerminal" value="true" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d2994240-897e-461c-b288-597de12c08ca" name="Default Changelist" comment="" />
+      <created>1591097253956</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1591097253956</updated>
+      <workItem from="1591097259333" duration="361000" />
+      <workItem from="1591097663070" duration="4000" />
+      <workItem from="1591148425485" duration="1302000" />
+      <workItem from="1591149795350" duration="8079000" />
+      <workItem from="1591235537889" duration="3248000" />
+      <workItem from="1591256871562" duration="9264000" />
+      <workItem from="1591277357333" duration="852000" />
+      <workItem from="1591280711789" duration="84000" />
+      <workItem from="1591281112153" duration="90000" />
+      <workItem from="1591321177867" duration="14917000" />
+      <workItem from="1591343503070" duration="7998000" />
+      <workItem from="1591353662764" duration="38000" />
+      <workItem from="1591353729691" duration="1703000" />
+      <workItem from="1591579799060" duration="339000" />
+      <workItem from="1591845686959" duration="97000" />
+      <workItem from="1593548348245" duration="398000" />
+      <workItem from="1593586023611" duration="437000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17107001" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32956153" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.33380482" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.41018388" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32956153" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32956153" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32956153" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" order="10" weight="0.32956153" />
+      <window_info anchor="bottom" id="Python Console" order="11" weight="0.4427157" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591281201511">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1591281201511" />
+    <state x="498" y="202" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1591343745874">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="498" y="202" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1536.824@0.0.1536.824" timestamp="1591343745874" />
+    <state x="548" y="167" key="FileChooserDialogImpl" timestamp="1593586074584">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="548" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1593586074584" />
+    <state width="1493" height="242" key="GridCell.Tab.0.bottom" timestamp="1593548749054">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="242" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1593548749054" />
+    <state width="1493" height="242" key="GridCell.Tab.0.center" timestamp="1593548749054">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="242" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1593548749054" />
+    <state width="1493" height="242" key="GridCell.Tab.0.left" timestamp="1593548749054">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="242" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1593548749054" />
+    <state width="1493" height="242" key="GridCell.Tab.0.right" timestamp="1593548749054">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="242" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1593548749054" />
+    <state width="1493" height="242" key="GridCell.Tab.1.bottom" timestamp="1593548749054">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="242" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1593548749054" />
+    <state width="1493" height="242" key="GridCell.Tab.1.center" timestamp="1593548749054">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="242" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1593548749054" />
+    <state width="1493" height="242" key="GridCell.Tab.1.left" timestamp="1593548749054">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="242" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1593548749054" />
+    <state width="1493" height="242" key="GridCell.Tab.1.right" timestamp="1593548749054">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="242" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1593548749054" />
+    <state width="197" height="457" key="HiddenNamespacesPopup" timestamp="1591159028031">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="197" height="457" key="HiddenNamespacesPopup/0.0.1536.824@0.0.1536.824" timestamp="1591159028031" />
+    <state x="277" y="57" key="SettingsEditor" timestamp="1591354117233">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="277" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1591354117233" />
+    <state x="322" y="141" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1591343751663">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="322" y="141" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1536.824@0.0.1536.824" timestamp="1591343751663" />
+    <state x="185" y="44" width="944" height="742" key="find.popup" timestamp="1591342956116">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="185" y="44" width="944" height="742" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1591342956116" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order_line.py</url>
+          <line>22</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>2436</line>
+          <option name="timeStamp" value="80" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>2437</line>
+          <option name="timeStamp" value="81" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>370</line>
+          <option name="timeStamp" value="160" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/pos_order1.py</url>
+          <line>245</line>
+          <option name="timeStamp" value="175" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>2400</line>
+          <option name="timeStamp" value="179" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>738</line>
+          <option name="timeStamp" value="180" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/pos_destroy_service/models/destroy_service.py</url>
+          <line>409</line>
+          <option name="timeStamp" value="202" />
+        </line-breakpoint>
+        <line-breakpoint suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_change_payment/models/pos_order.py</url>
+          <line>47</line>
+          <option name="timeStamp" value="203" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/pos_digital_sign_sum/models/models.py</url>
+          <line>53</line>
+          <option name="timeStamp" value="205" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/pos_order1.py</url>
+          <line>183</line>
+          <option name="timeStamp" value="207" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/pos_order1.py</url>
+          <line>242</line>
+          <option name="timeStamp" value="268" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_exchange_service/models/exchange_service.py</url>
+          <line>222</line>
+          <option name="timeStamp" value="270" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_exchange_service/models/exchange_service.py</url>
+          <line>196</line>
+          <option name="timeStamp" value="271" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/izi_service_card_using.py</url>
+          <line>77</line>
+          <option name="timeStamp" value="286" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/therapy_prescription1.py</url>
+          <line>140</line>
+          <option name="timeStamp" value="291" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/stock_picking1.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="292" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/stock_picking1.py</url>
+          <line>21</line>
+          <option name="timeStamp" value="293" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_use_service_card/models/tmp_pos_use_material.py</url>
+          <line>77</line>
+          <option name="timeStamp" value="296" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_use_service_card/models/use_service_card.py</url>
+          <line>1359</line>
+          <option name="timeStamp" value="297" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_use_service_card/models/use_service_card.py</url>
+          <line>813</line>
+          <option name="timeStamp" value="298" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_use_service_card/models/use_service_card.py</url>
+          <line>544</line>
+          <option name="timeStamp" value="299" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/report_qweb/models/request_material.py</url>
+          <line>17</line>
+          <option name="timeStamp" value="300" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/report_qweb/models/request_material.py</url>
+          <line>21</line>
+          <option name="timeStamp" value="301" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/report_qweb/models/invoice_use_service.py</url>
+          <line>38</line>
+          <option name="timeStamp" value="303" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/pos_revenue_allocation/models/use_service_card.py</url>
+          <line>14</line>
+          <option name="timeStamp" value="304" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/invoice_make_payment.py</url>
+          <line>315</line>
+          <option name="timeStamp" value="306" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/invoice_make_payment.py</url>
+          <line>91</line>
+          <option name="timeStamp" value="307" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>2141</line>
+          <option name="timeStamp" value="314" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/pos_promotion/models/pos_order.py</url>
+          <line>23</line>
+          <option name="timeStamp" value="315" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/pos_payment_allocation/models/pos_order.py</url>
+          <line>14</line>
+          <option name="timeStamp" value="316" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/pos_revenue_allocation/models/pos_order.py</url>
+          <line>79</line>
+          <option name="timeStamp" value="318" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_exchange_service/models/pos_order.py</url>
+          <line>22</line>
+          <option name="timeStamp" value="319" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>2169</line>
+          <option name="timeStamp" value="320" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>2191</line>
+          <option name="timeStamp" value="321" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>2262</line>
+          <option name="timeStamp" value="322" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>2272</line>
+          <option name="timeStamp" value="323" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_scan_barcode/models/scan_barcode_izi_service_card_using_line.py</url>
+          <line>65</line>
+          <option name="timeStamp" value="327" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_scan_barcode/models/scan_barcode_izi_service_card_using_line.py</url>
+          <line>83</line>
+          <option name="timeStamp" value="328" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/izi_service_card_using.py</url>
+          <line>83</line>
+          <option name="timeStamp" value="329" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/izi_service_card_using.py</url>
+          <line>116</line>
+          <option name="timeStamp" value="330" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/izi_service_card_using.py</url>
+          <line>117</line>
+          <option name="timeStamp" value="332" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_use_service_card/models/use_service_card.py</url>
+          <line>1835</line>
+          <option name="timeStamp" value="338" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_use_service_card/models/use_service_card.py</url>
+          <line>1843</line>
+          <option name="timeStamp" value="339" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_use_service_card/models/use_service_card.py</url>
+          <line>1999</line>
+          <option name="timeStamp" value="340" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_use_service_card/models/use_service_card.py</url>
+          <line>2002</line>
+          <option name="timeStamp" value="341" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_notification_approve/models/pos_order.py</url>
+          <line>59</line>
+          <option name="timeStamp" value="351" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>749</line>
+          <option name="timeStamp" value="352" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>753</line>
+          <option name="timeStamp" value="354" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>754</line>
+          <option name="timeStamp" value="355" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>756</line>
+          <option name="timeStamp" value="356" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>758</line>
+          <option name="timeStamp" value="358" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons/point_of_sale/models/pos_order.py</url>
+          <line>870</line>
+          <option name="timeStamp" value="359" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>951</line>
+          <option name="timeStamp" value="360" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_notification_approve/models/pos_order.py</url>
+          <line>91</line>
+          <option name="timeStamp" value="363" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_custom_backend/models/pos_order.py</url>
+          <line>1798</line>
+          <option name="timeStamp" value="368" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_use_service_card/models/use_service_card_line.py</url>
+          <line>113</line>
+          <option name="timeStamp" value="383" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_use_service_card/models/use_service_card_line.py</url>
+          <line>119</line>
+          <option name="timeStamp" value="384" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/izi_service_card_using.py</url>
+          <line>61</line>
+          <option name="timeStamp" value="394" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons/stock_picking_batch/wizard/stock_immediate_transfer.py</url>
+          <line>11</line>
+          <option name="timeStamp" value="426" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons/stock/wizard/stock_backorder_confirmation.py</url>
+          <line>22</line>
+          <option name="timeStamp" value="428" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/pos_order.py</url>
+          <line>273</line>
+          <option name="timeStamp" value="455" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/partner_interaction.py</url>
+          <line>73</line>
+          <option name="timeStamp" value="465" />
+        </line-breakpoint>
+        <line-breakpoint suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/partner_interaction.py</url>
+          <line>88</line>
+          <option name="timeStamp" value="471" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/therapy_record.py</url>
+          <line>23</line>
+          <option name="timeStamp" value="473" />
+        </line-breakpoint>
+        <line-breakpoint suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/therapy_record.py</url>
+          <line>47</line>
+          <option name="timeStamp" value="478" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/therapy_record.py</url>
+          <line>60</line>
+          <option name="timeStamp" value="481" />
+        </line-breakpoint>
+        <line-breakpoint suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons/stock/models/stock_picking.py</url>
+          <line>823</line>
+          <option name="timeStamp" value="483" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons/stock/models/stock_picking.py</url>
+          <line>826</line>
+          <option name="timeStamp" value="484" />
+        </line-breakpoint>
+        <line-breakpoint suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/stock_picking.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="485" />
+        </line-breakpoint>
+        <line-breakpoint suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons/stock/models/stock_move.py</url>
+          <line>1138</line>
+          <option name="timeStamp" value="487" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/stock_picking.py</url>
+          <line>72</line>
+          <option name="timeStamp" value="488" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/stock_picking.py</url>
+          <line>33</line>
+          <option name="timeStamp" value="489" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/therapy_record.py</url>
+          <line>46</line>
+          <option name="timeStamp" value="490" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/therapy_record.py</url>
+          <line>43</line>
+          <option name="timeStamp" value="492" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/therapy_record.py</url>
+          <line>50</line>
+          <option name="timeStamp" value="493" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/therapy_bundle_barem.py</url>
+          <line>23</line>
+          <option name="timeStamp" value="496" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/res_partner_custom/models/res_partner.py</url>
+          <line>253</line>
+          <option name="timeStamp" value="500" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/res_partner_custom/models/res_partner.py</url>
+          <line>254</line>
+          <option name="timeStamp" value="501" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/partner_interaction.py</url>
+          <line>76</line>
+          <option name="timeStamp" value="505" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/partner_interaction.py</url>
+          <line>79</line>
+          <option name="timeStamp" value="506" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/therapy_prescription.py</url>
+          <line>283</line>
+          <option name="timeStamp" value="511" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/product_product.py</url>
+          <line>13</line>
+          <option name="timeStamp" value="512" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/product_product.py</url>
+          <line>16</line>
+          <option name="timeStamp" value="513" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/activity_history.py</url>
+          <line>103</line>
+          <option name="timeStamp" value="518" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/activity_history.py</url>
+          <line>49</line>
+          <option name="timeStamp" value="519" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/activity_history.py</url>
+          <line>52</line>
+          <option name="timeStamp" value="520" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/activity_history.py</url>
+          <line>54</line>
+          <option name="timeStamp" value="521" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/models/import_master.py</url>
+          <line>348</line>
+          <option name="timeStamp" value="540" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/product_product.py</url>
+          <line>17</line>
+          <option name="timeStamp" value="542" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/product_product.py</url>
+          <line>16</line>
+          <option name="timeStamp" value="543" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/models/import_master.py</url>
+          <line>323</line>
+          <option name="timeStamp" value="588" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/therapy_prescription.py</url>
+          <line>51</line>
+          <option name="timeStamp" value="590" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/therapy_prescription.py</url>
+          <line>53</line>
+          <option name="timeStamp" value="591" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/models/import_master.py</url>
+          <line>304</line>
+          <option name="timeStamp" value="594" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/models/import_master.py</url>
+          <line>321</line>
+          <option name="timeStamp" value="595" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/models/therapy_record.py</url>
+          <line>12</line>
+          <option name="timeStamp" value="596" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/activity_history.py</url>
+          <line>67</line>
+          <option name="timeStamp" value="597" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/activity_history.py</url>
+          <line>66</line>
+          <option name="timeStamp" value="598" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_lead/models/mail_activity.py</url>
+          <line>12</line>
+          <option name="timeStamp" value="599" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/pos_order.py</url>
+          <line>202</line>
+          <option name="timeStamp" value="602" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="self.categ_id.name" language="Python" />
+        <watch expression="res['user_id']" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Korea_Spa$odoo_bin.coverage" NAME="odoo-bin Coverage Results" MODIFIED="1593548682875" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/odoo" />
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="evaluateCodeFragment">
+      <expression>
+        <expression-string>therapy_bundle_line_id[2]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>therapy_bundle_line_id</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>therapy_bundle_line_id['product_id']</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>product_order['product_id']</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>product_template_obj.search([('default_code', '=', code)], limit=1)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>param_obj.get_param(product.default_code)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>param_obj.get_param(product.default_code).split(',')</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self._context</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self._context.get('user_id')</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+    </expressions>
+    <expressions id="watch">
+      <expression>
+        <expression-string>self.categ_id.name</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>therapy_record_product.qty_max</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>line.qty</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>therapy_record_product.product_id.name</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>therapy_record_product_id.product_id.name</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>therapy_quantity_used</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.env['pos.order'].search([('id', '=', 3834)]).state</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.env['res.partner'].search([('id', '=', 5255)])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>bundle_therapy_line_ids</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>bundle_therapy</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+    <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>partner_code == False</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>partner_code</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>str(datetime.today().date())</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>datetime.today().date()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>datetime.today()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>datetime.date.today()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.env['product.product'].search([('default_code', '=', sheet.cell(index, 3).value)], limit=1)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.env['product.product'].search([('default_code', '=', sheet.cell(index, 3).value)], limit=1).id</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>sheet.cell(index, 3).value</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/models/import_master.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="20368">
+          <caret line="1080" column="73" selection-start-line="1080" selection-start-column="73" selection-end-line="1080" selection-end-column="73" />
+          <folding>
+            <element signature="e#25#64#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/therapy_record_product.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="12" column="44" selection-start-line="12" selection-start-column="44" selection-end-line="12" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/views/therapy_prescription_view.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1216">
+          <caret line="64" column="63" selection-start-line="64" selection-start-column="53" selection-end-line="64" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/i18n/vi_VN.po">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5719">
+          <caret line="301" column="10" selection-start-line="301" selection-start-column="7" selection-end-line="301" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/views/product_product_view.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="8" column="51" selection-start-line="8" selection-start-column="33" selection-end-line="8" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/therapy_record.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="475">
+          <caret line="28" column="16" selection-start-line="28" selection-start-column="4" selection-end-line="28" selection-end-column="16" />
+          <folding>
+            <element signature="e#24#77#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/therapy_bundle.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="307">
+          <caret line="23" selection-start-line="23" selection-end-line="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/therapy_prescription.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8417">
+          <caret line="446" selection-start-line="446" selection-end-line="446" />
+          <folding>
+            <element signature="e#24#77#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/stock_picking.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/models/pos_order.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="15" selection-start-line="15" selection-end-line="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/models/therapy_record.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/models/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="10" column="28" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="28" />
+          <folding>
+            <element signature="e#158#185#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/models/import_therapy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="6" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/views/therapy_record_view.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="570">
+          <caret line="30" column="86" selection-start-line="30" selection-start-column="86" selection-end-line="30" selection-end-column="86" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/stock_inventory_customer/views/import_view.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="215">
+          <caret line="65" column="86" selection-start-line="65" selection-start-column="86" selection-end-line="65" selection-end-column="86" />
+          <folding>
+            <element signature="n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#odoo#0;n#!!top" />
+            <element signature="n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#odoo#0;n#!!top" />
+            <element signature="n#page#3;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#odoo#0;n#!!top" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_lead/i18n/vi_VN.po">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-57" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_therapy_record/i18n/vi_VN.po">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="134">
+          <caret line="117" column="16" selection-start-line="117" selection-start-column="16" selection-end-line="117" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/therapy_record.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="277">
+          <caret line="23" selection-start-line="23" selection-end-line="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/activity_history.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="4" selection-end-column="66" />
+          <folding>
+            <element signature="e#1889#1987#0" />
+            <element signature="e#2025#2351#0" />
+            <element signature="e#2405#3154#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/stock_picking.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="665">
+          <caret line="39" column="83" selection-start-line="39" selection-start-column="75" selection-end-line="39" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/product_service_remind.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-313" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_pos_bundle_therapy/models/pos_order.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="618">
+          <caret line="203" column="120" selection-start-line="203" selection-start-column="120" selection-end-line="203" selection-end-column="120" />
+          <folding>
+            <element signature="e#996#4696#0" />
+            <element signature="e#4756#5934#0" />
+            <element signature="e#5988#7244#0" />
+            <element signature="e#7290#7372#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/service_booking.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons/purchase/report/purchase_report_views.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="39" selection-start-line="2" selection-start-column="39" selection-end-line="2" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons/purchase/report/purchase_report.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/izi_service_card_using.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="26" column="65" selection-start-line="26" selection-start-column="65" selection-end-line="26" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/models/product_product.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="19" column="46" selection-start-line="19" selection-start-column="40" selection-end-line="19" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_interaction/views/therapy_record_view.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="8" column="83" selection-start-line="8" selection-start-column="83" selection-end-line="8" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_lead/views/crm_lead_views.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3629">
+          <caret line="191" column="92" selection-start-line="191" selection-start-column="85" selection-end-line="191" selection-end-column="92" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_lead/models/mail_activity.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="13" column="18" selection-start-line="13" selection-start-column="18" selection-end-line="13" selection-end-column="18" />
+          <folding>
+            <element signature="e#25#64#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_res_permissions/security/ir_rule_crm.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_lead/models/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="8" column="27" selection-start-line="8" selection-start-column="27" selection-end-line="8" selection-end-column="27" />
+          <folding>
+            <element signature="e#25#47#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/izi_crm_lead/models/crm_lead.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="9" column="24" selection-start-line="9" selection-start-column="20" selection-end-line="9" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="35" selection-start-column="35" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/cf_backend_theme/__manifest__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="21" column="6" selection-start-line="19" selection-start-column="4" selection-end-line="21" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/backend_theme_v11/__manifest__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="20" column="23" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons_custom/silent_material_theme/__manifest__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="399">
+          <caret line="21" column="26" selection-start-line="21" selection-start-column="9" selection-end-line="21" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons/website_theme_install/__manifest__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons/web_backend/__manifest__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="11" column="17" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons/web_backend/static/src/img/checked.svg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons/web_backend/static/src/img/default_icon_app.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons/web_backend/static/src/img/down-arrow.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons/web_backend/static/src/img/mobile-icons/android-192x192.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons/web_backend/static/src/img/mobile-icons/apple-152x152.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons/web_backend/static/src/img/mobile-icons/windows-144x144.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons/web_backend/views/webclient_templates.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1632" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/addons/website_theme_install/static/src/less/website_theme_install.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1425" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/.idea/misc.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/.idea/modules.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/.idea/inspectionProfiles/profiles_settings.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odoo/.idea/workspace.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="35" column="70" selection-start-line="35" selection-start-column="61" selection-end-line="35" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

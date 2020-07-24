@@ -1,0 +1,724 @@
+odoo.define('ev_advanced_search_tree.renderer', function (require) {
+
+"use strict";
+
+var core = require('web.core');
+var _t = core._t;
+var crash_manager = require('web.crash_manager');
+var framework = require('web.framework');
+var ListRenderer = require('web.ListRenderer');
+var fieldUtils = require('web.field_utils');
+var BasicModel = require('web.BasicModel');
+var concurrency = require('web.concurrency');
+var Context = require('web.Context');
+var Domain = require('web.Domain');
+var session = require('web.session');
+var utils = require('web.utils');
+var AbstractView = require('web.AbstractView');
+var QWeb = core.qweb;
+var BasicController = require('web.BasicController');
+
+    ListRenderer.include({
+    template: "web.datepicker",
+    events: _.extend({}, ListRenderer.prototype.events, {
+        "keyup .custom-control-searchbar-advance" : "ks_advance_searchbar",
+        "change .custom-control-searchbar-change" : "ks_change_event",
+        "click .ks_remove_popup" : "ks_remove_popup_domain",
+    }),
+
+    init: function (parent, state, params) {
+
+        this.restoreInVisibility = [];
+        this.restoreName = [];
+        this.restoreColumnsDescription = [];
+        this.ks_duplicate_data = [];
+        this.ks_call_flag=1;
+        this.ks_datepicker_flag=0;
+        this._super.apply(this,arguments);
+        this.ks_user_table_result = null;
+        this.ks_list_view_data = null;
+        this.ks_field_domain_dict={}
+        this.ks_key_fields=[]
+        this.ks_field_domain_list=[]
+        this.ksDomain=null;
+        this.ksBaseDomain=null
+        this.ks_allow_search = true;
+        this.ksbaseFlag=false;
+        this.ks_trigger_up_flag=false;
+        this.ks_focus_flag = false;
+        this.ks_blur_flag  = true;
+    },
+
+//    willStart: function () {
+//        core.bus.on('click', this, this._onWindowClicked.bind(this));
+//        this.ks_count = 0;
+//        this.ks_mode_count=0;
+//        var self = this;
+//        var def1 = this._super.apply(this, arguments);
+//
+//        var def3 = this._rpc({
+//                model: 'user.mode',
+//                method: 'check_user_mode',
+//                args: [this.state.model,odoo.session_info.uid,this.ksViewID],
+//            }).then(function(ks_list_view_data){
+//                this.userMode = ks_list_view_data['list_view_data'];
+//                this.ks_list_view_data = ks_list_view_data;
+//                this.ks_settingMode();
+//            }.bind(this));
+//
+//
+//        var def2 = this._rpc({
+//                model: 'user.specific',
+//                method: 'check_user_exists',
+//                args: [this.state.model,odoo.session_info.uid,this.ksViewID],
+//            }).then(function(ks_user_table_result){
+//                 this.ks_user_table_result = ks_user_table_result;
+//                 if(this.ks_user_table_result) {
+//                    this._processColumns({});
+//                }
+//            }.bind(this));
+//        return $.when(def1, def2,def3);
+//    },
+
+    _processColumns: function (columnInvisibleFields){
+        var self = this;
+        var ks_load_data = [];
+        var ks_name;
+        var ks_fields;
+        var ks_description;
+        self.handleField = null;
+        if(this.restoreInVisibility.length === 0) {
+            for(var i = 0; i<this.arch.children["length"]; i++) {
+                if(this.arch.children[i].tag === 'field') {
+                    ks_name = this.arch.children[i].attrs.name;
+                    ks_fields = this.state.fields[ks_name];
+                    if (this.arch.children[i].attrs.widget) {
+                            ks_description = this.state.fieldsInfo.list[ks_name].Widget.prototype.description;
+                        }
+                    if(ks_fields) {
+                        if (ks_description === undefined) {
+                            ks_description = this.arch.children[i].attrs.string || ks_fields.string;
+                        }
+                    }
+                    this.restoreName.push(this.arch.children[i].attrs.name);
+                    this.restoreColumnsDescription.push(ks_description);
+                    ks_description=undefined
+                    if(this.arch.children[i].attrs.invisible === "1")
+                        this.restoreInVisibility.push(false);
+                    else
+                        this.restoreInVisibility.push(true);
+                }
+            }
+         }
+
+        if(this.ks_list_view_data!==null && this.ks_list_view_data !== undefined && this.ks_list_view_data.ks_dynamic_list_show === true && this.ks_user_table_result && this.ks_count == 0) {
+            ks_load_data = this.arch.children.slice(0);
+            for(var i = 0; i < this.ks_user_table_result["length"]; i++) {
+                for(var j = 0;j < this.ks_user_table_result["length"]; j++) {
+                    if(ks_load_data[j].attrs.name === this.ks_user_table_result[i].field_name) {
+                        this.arch.children[i]=ks_load_data[j];
+
+                        if(!this.ks_user_table_result[i].ksShowField) {
+                            this.arch.children[i].attrs.modifiers["required"]=this.ks_user_table_result[i].ks_required
+                            this.arch.children[i].attrs.modifiers.column_invisible=true;
+                            this.arch.children[i].attrs.invisible="1";
+                        } else {
+                            this.arch.children[i].attrs.modifiers["required"]=this.ks_user_table_result[i].ks_required
+                            this.arch.children[i].attrs.modifiers.column_invisible=false;
+                            this.arch.children[i].attrs.invisible="0";
+                        }
+                        this.arch.children[i].attrs["string"] =  this.ks_user_table_result[i].ks_columns_name;
+                    }
+                }
+            }
+            this.ks_count++;
+        }
+        return  this._super.apply(this,arguments);
+    },
+
+    _onRowClicked: function(event) {
+       if(!window.getSelection().toString() || !this._isEditable()) {
+            this._super.apply(this, arguments);
+       }
+    },
+
+//    on_attach_callback: function () {
+//       if(this.ks_list_view_data.ks_can_edit===true) {
+//          if(this.ks_mode_count===0) {
+//             if(this.userMode.length===1) {
+//                if(this.userMode[0].editable===true) {
+//                     $('#mode').prop('checked', true);
+//                }
+//                else {
+//                    $('#mode').prop('checked', false);
+//                }
+//              }
+//              if(this.editable === 'top' || this.editable === 'bottom') {
+//                    $('#mode').prop('checked',true)
+//              }
+//            this.ks_mode_count++;
+//          }
+//       } else {
+//            $('.mode_button').hide();
+//       }
+//       if(this.ks_list_view_data.ks_dynamic_list_show === false) {
+//             $('.toggle_button').hide();
+//       }
+//    },
+
+//    ks_settingMode: function() {
+//       if(this.ks_list_view_data.ks_can_edit === true) {
+//            if(this.userMode.length === 1) {
+//                if(this.userMode[0].editable === true) {
+//                    this.editable = true;
+//                    this.getParent().mode = "edit";
+//                }
+//                else {
+//                    this.editable = false;
+//                    this.getParent().mode = "readonly"
+//                }
+//            }
+//       }
+//
+//    },
+
+    _getNumberOfCols: function () {
+        var ks_columns = this._super();
+        ks_columns +=1;
+
+        return ks_columns;
+    },
+
+    _renderHeader: function (isGrouped) {
+        this.ks_allow_search = true;
+        var $ks_header = this._super(isGrouped);
+        this.ks_field_popup = {};
+        if(this.ksDomain!=null) {
+            for(var i=0; i < this.ksDomain.length; i++) {
+                if(!(this.ksDomain[i] === '|')) {
+                    if(this.ks_field_popup[this.ksDomain[i][0]] === undefined) {
+                        this.ks_field_popup[this.ksDomain[i][0]]=[this.ksDomain[i][2]]
+                    } else {
+                        this.ks_field_popup[this.ksDomain[i][0]].push(this.ksDomain[i][2])
+                    }
+                }
+            }
+        }
+        for(var ks_colour = 0 ; ks_colour < $ks_header[0].children[0].children.length; ks_colour++) {
+            $($ks_header[0].children[0].children[ks_colour]).addClass("bg-primary")
+        }
+        this.ks_call_flag=1;
+        var $th = $('<th>');
+        $th.addClass("bg-primary")
+        if (this.mode !== 'edit') {
+            $ks_header.find("tr").addClass("bg-primary")
+            $ks_header.find("tr").prepend($th.html('S.No'));
+        }
+
+        if(this.$el.parents(".o_field_one2many").length==0 ) {
+
+                var $tr = $('<tr>')
+                .append(_.map(this.columns, this.ks_textBox.bind(this)));
+
+                if (this.hasSelectors) {
+                    $tr.prepend($('<th>'));
+                }
+                $tr.addClass('hide-on-modal')
+                $tr.prepend($('<th>'));
+
+        }
+        this.ks_field_popup={}
+        return $ks_header.append($tr);
+    },
+
+    ks_textBox: function(node) {
+        if(node.tag==="field") {
+            if(this.state.fields[node.attrs.name].store===true) {
+                var ks_name = node.attrs.name;
+                var ks_fields = this.state.fields[ks_name];
+                var ks_selection_values = []
+                var ks_description;
+                var ks_field_type;
+                var $ks_from;
+                var ks_field_identity;
+                var ks_identity_flag=false;
+                var ks_field_id=ks_name;
+                var ks_is_hide = true;
+
+                if (node.attrs.widget) {
+                    ks_description = this.state.fieldsInfo.list[ks_name].Widget.prototype.description;
+                }
+                if(ks_fields) {
+                    ks_field_type = this.state.fields[ks_name].type;
+
+                    if(ks_field_type === "selection") {
+                        ks_selection_values = this.state.fields[ks_name].selection;
+                    }
+                    if (ks_description === undefined) {
+                        ks_description = node.attrs.string || ks_fields.string;
+                    }
+                }
+
+                var $th = $('<th>').addClass("ks_advance_search_row ");
+                if(ks_field_type === "date" || ks_field_type === "datetime"){
+                    if(this.ks_call_flag>1){
+                        $th.addClass("ks_fix_width");
+                    }
+                }
+
+                if(ks_field_type === "date" || ks_field_type === "datetime"){
+                     if(!(this.ks_call_flag>1)) {
+                           this.ks_call_flag += 1;
+                           $ks_from = this.ks_textBox(node);
+                           ks_identity_flag = true
+                    }
+                    if(this.ks_call_flag == 2 && ks_identity_flag == false) {
+                           ks_field_id = ks_name+"_end_date"
+                           ks_field_identity = ks_field_id+" end_date"
+                    } else {
+                           ks_field_id = ks_name+"_start_date"
+                           ks_field_identity = ks_field_id+" start_date"
+                    }
+                }
+
+                var $input =$(QWeb.render("ev_list_view_advance_search", {
+                    ks_id : ks_field_id,
+                    ks_description : ks_description,
+                    ks_type:ks_field_type,
+                    ks_field_identifier : ks_field_identity,
+                    ks_selection: ks_selection_values
+                }));
+
+                if((ks_field_type==="date" || ks_field_type==="datetime" ) && (this.ks_call_flag==2 && ks_identity_flag==false)) {
+                    if(this.state.domain.length === 0){
+                        $input.addClass("d-none");
+                        $th.addClass("ks_date_inner");
+                    }
+
+                    if(!(this.state.domain.length === 0 )) {
+                        if(Object.values(this.ks_field_popup)!== undefined){
+                            for(var ks_hide = 0; ks_hide < Object.keys(this.ks_field_popup).length; ks_hide++) {
+                                if((Object.keys(this.ks_field_popup)[ks_hide] === ks_name)){
+                                        ks_is_hide=false
+                                        break
+                                }
+                            }
+                            if(ks_is_hide===true) {
+                                $input.addClass("d-none");
+                                $th.addClass("d-none");
+                            } else{
+                                $th.addClass("ks_date_inner");
+                            }
+
+                        }
+                    }
+                }
+
+                  if(this.ksDomain!=null && this.ksDomain.length) {
+                    if(this.ksDomain[this.ksDomain.length-1]===this.state.domain[this.state.domain.length-1]) {
+                        if(ks_field_type==="date" || ks_field_type==="datetime") {
+                            for(var ks_add_span=0;ks_add_span<Object.keys(this.ks_field_popup).length;ks_add_span++) {
+                                if(Object.keys(this.ks_field_popup)[ks_add_span]===ks_name) {
+                                    for(var ks_add_span_inner=0;ks_add_span_inner<Object.values(this.ks_field_popup)[ks_add_span].length-1;ks_add_span_inner++) {
+
+                                        var $div = $('<div>').addClass("ks_inner_search")
+                                        $div.attr('id',ks_name+'_value'+ks_add_span_inner)
+
+                                        var $span = $('<span>').addClass("ks_advance_chip ");
+                                        $span.attr('id',ks_name+'_ks_span'+ks_add_span_inner)
+
+                                        var $i = $('<i>').addClass("fa fa-times")
+                                        $i.addClass('ks_remove_popup');
+
+                                        if(this.ks_call_flag == 2 && ks_identity_flag==false) {
+                                            $span.text(Object.values(this.ks_field_popup)[ks_add_span][1])
+                                            $input.prepend($div);
+                                            $input.find("#"+Object.keys(this.ks_field_popup)[ks_add_span]+"_value"+ks_add_span_inner).prepend($i);
+                                            $input.find("#"+Object.keys(this.ks_field_popup)[ks_add_span]+"_value"+ks_add_span_inner).prepend($span)
+                                        } else {
+                                            $input.addClass("ks_date_main")
+                                            $span.text(Object.values(this.ks_field_popup)[ks_add_span][0])
+                                            $input.prepend($div);
+                                            $input.find("#"+Object.keys(this.ks_field_popup)[ks_add_span]+"_value"+ks_add_span_inner).prepend($i);
+                                            $input.find("#"+Object.keys(this.ks_field_popup)[ks_add_span]+"_value"+ks_add_span_inner).prepend($span)
+                                        }
+                                        $input.find('input').removeAttr('placeholder');
+                                    }
+                                }
+                            }
+                        }
+                        else if(ks_field_type === "selection") {
+                            for(var ks_add_span = 0; ks_add_span < Object.keys(this.ks_field_popup).length; ks_add_span++) {
+                                if(Object.keys(this.ks_field_popup)[ks_add_span] === ks_name) {
+                                    for(var ks_add_span_inner = 0; ks_add_span_inner < Object.values(this.ks_field_popup)[ks_add_span].length; ks_add_span_inner++) {
+                                        var value;
+                                        var $div = $('<div>').addClass("ks_inner_search")
+                                        $div.attr('id',ks_name+'_value'+ks_add_span_inner)
+
+                                        var $span = $('<span>').addClass("ks_advance_chip");
+                                        $span.attr('id',ks_name+'_ks_span'+ks_add_span_inner)
+                                        $span.addClass("ks_advance_chip_ellipsis");
+
+                                        var $i = $('<i>').addClass("fa fa-times")
+                                        $i.addClass('ks_remove_popup');
+
+                                        for(var sel=0; sel < ks_selection_values.length; sel++) {
+                                            if(ks_selection_values[sel][0] === Object.values(this.ks_field_popup)[ks_add_span][ks_add_span_inner]) {
+                                                value = ks_selection_values[sel][1];
+                                            }
+                                        }
+
+                                        $span.text(value)
+                                        $input.prepend($div);
+                                        $input.find("#"+Object.keys(this.ks_field_popup)[ks_add_span]+"_value"+ks_add_span_inner).prepend($i);
+                                        $input.find("#"+Object.keys(this.ks_field_popup)[ks_add_span]+"_value"+ks_add_span_inner).prepend($span)
+                                    }
+                                }
+                            }
+                        } else {
+                               for(var ks_add_span=0; ks_add_span < Object.keys(this.ks_field_popup).length; ks_add_span++) {
+                                    if(Object.keys(this.ks_field_popup)[ks_add_span] === ks_name) {
+                                        for(var ks_add_span_inner=0;ks_add_span_inner<Object.values(this.ks_field_popup)[ks_add_span].length;ks_add_span_inner++) {
+
+                                            var $div = $('<div>').addClass("ks_inner_search")
+                                            $div.attr('id',ks_name+'_value'+ks_add_span_inner)
+
+                                            var $span = $('<span>').addClass("ks_advance_chip");
+
+                                            if(!(ks_field_type === "date" || ks_field_type === "datetime")) {
+                                                $span.addClass("ks_advance_chip_ellipsis");
+                                            }
+
+
+                                            $span.attr('id',ks_name+'_ks_span'+ks_add_span_inner)
+                                            var $i = $('<i>').addClass("fa fa-times")
+
+                                            $i.addClass('ks_remove_popup');
+                                            if(ks_field_type === 'monetary' || ks_field_type === 'integer' || ks_field_type === 'float') {
+                                                var currency = this.getSession().get_currency(this.ks_list_view_data.currency_id);
+                                                var formatted_value = fieldUtils.format.float(Object.values(this.ks_field_popup)[ks_add_span][ks_add_span_inner] || 0, {digits: currency && currency.digits});
+                                                $span.text(formatted_value)
+
+                                            } else {
+                                                $span.text(Object.values(this.ks_field_popup)[ks_add_span][ks_add_span_inner])
+                                            }
+                                             if(!(ks_field_type === 'many2one'|| ks_field_type === 'many2many' || ks_field_type === 'one2many'))
+                                                $input.find('input').removeAttr('placeholder');
+                                            $input.prepend($div);
+                                            $input.find("#"+Object.keys(this.ks_field_popup)[ks_add_span]+"_value"+ks_add_span_inner).prepend($i);
+                                            $input.find("#"+Object.keys(this.ks_field_popup)[ks_add_span]+"_value"+ks_add_span_inner).prepend($span)
+                                        }
+                                    }
+                               }
+                        }
+                    }
+                  }
+
+                  if(this.ksDomain!=null && this.ksDomain.length) {
+                      if(!(this.ksDomain[this.ksDomain.length-1]===this.state.domain[this.state.domain.length-1])) {
+                            delete this.ks_field_domain_dict
+                            delete this.ksDomain
+                            this.ksBaseDomain = []
+                            this.ks_field_domain_dict = {}
+                            this.ks_key_fields.splice(0,this.ks_key_fields.length)
+                            this.ks_field_domain_list.splice(0,this.ks_field_domain_list.length)
+                      }
+                  }
+                    if(ks_field_type==="datetime" || ks_field_type==="date") {
+                         $input.find('.custom-control-searchbar-change').datepicker();
+                    }
+                    if(this.ksDomain!=null && this.ksDomain.length) {
+                        if(this.ksDomain.length === this.state.domain.length) {
+                            for(var i = 0; i <this.state.domain.length; i++) {
+                                if(!(this.state.domain[i] === this.ksDomain[i])) {
+                                    this.ksbaseFlag = true
+                                }
+                            }
+                        }
+                        if(this.ksbaseFlag === true) {
+                            this.ksBaseDomain = this.state.domain
+                            this.ksbaseFlag=false
+                        }
+                    }
+                    if((this.ksDomain === null || this.ksDomain ===undefined || this.ksDomain.length === 0) && this.state.domain.length) {
+                        this.ksBaseDomain = this.state.domain
+                    }
+                    if((this.ksDomain === null || this.ksDomain ===undefined || this.ksDomain.length === 0) && this.state.domain.length === 0) {
+                        this.ksBaseDomain = this.state.domain
+                    }
+
+                    $th.append($input);
+                    if(this.ks_call_flag == 2) {
+                        $th.append($ks_from);
+                        this.ks_datepicker_flag+=1;
+                    }
+                    if(this.ks_datepicker_flag == 2) {
+                        this.ks_call_flag = 1;
+                        this.ks_datepicker_flag = 0;
+                    }
+                }
+                else {
+                  var $th = $('<th>').addClass("ks_advance_search_row ");
+               }
+               return $th;
+        }
+    },
+
+    _renderView: function () {
+        if(this.$el.parents(".o_field_one2many").length==0) {
+            this.noContentHelp = ''
+        }
+        return this._super.apply(this, arguments);
+    },
+
+    _renderFooter: function (isGrouped) {
+         var $ks_footer = this._super(isGrouped);
+
+         $ks_footer.find("tr").prepend($('<td>'));
+
+         return $ks_footer;
+     },
+
+    _renderGroupRow: function (group, groupLevel) {
+
+       var $ks_row =  this._super(group, groupLevel);
+
+       if (this.mode !== 'edit' || this.hasSelectors) {
+            $ks_row.find("th.o_group_name").after($('<td>'));
+       }
+
+       return $ks_row;
+    },
+
+    _renderGroups: function (data, groupLevel) {
+        var self = this;
+        var _self = this;
+        var result = [];
+
+        groupLevel = groupLevel || 0;
+
+        var $tbody = $('<tbody>');
+        _.each(data, function (group) {
+             if (!$tbody) {
+                $tbody = $('<tbody>');
+             }
+             $tbody.append(self._renderGroupRow(group, groupLevel));
+             if (group.data.length) {
+                result.push($tbody);
+
+                // render an opened group
+                if (group.groupedBy.length) {
+                    // the opened group contains subgroups
+                    result = result.concat(self._renderGroups(group.data, groupLevel + 1));
+                } else{
+                    // the opened group contains records
+                    var $ks_records = _.map(group.data, function (ks_record,index) {
+                    //the opened group contains records
+                        if (_self.mode !== 'edit' || _self.hasSelectors) {
+
+                            return self._renderRow(ks_record).prepend($('<th>').html(index+1));
+
+                        } else {
+
+                            return self._renderRow(ks_record);
+                        }
+
+                    });
+                    result.push($('<tbody>').append($ks_records));
+                }
+                $tbody = null;
+             }
+        });
+        if ($tbody) {
+            result.push($tbody);
+        }
+
+        return result;
+    },
+
+    _renderRow: function (record) {
+        var $ks_row = this._super(record);
+        if (this.mode !== 'edit' && this.state.groupedBy.length==0) {
+
+            var ks_index = this.state.data.findIndex(function(event) {
+                return record.id===event.id
+            })
+
+            if (ks_index!==-1) {
+                 $ks_row.prepend($('<th>').html(ks_index+1));
+            }
+        }
+    return $ks_row;
+    },
+
+    _onSelectRecord: function (event) {
+        this._super.apply(this, arguments);
+        var checkbox = $(event.currentTarget).find('input');
+        var $selectedRow = $(checkbox).closest('tr')
+
+        if($(checkbox).prop('checked')) {
+            $selectedRow.addClass('ks_highlight_row');
+        }
+        else {
+            $selectedRow.removeClass('ks_highlight_row')
+        }
+    },
+
+    _onToggleSelection: function (event) {
+
+       this._super.apply(this, arguments);
+       var ks_is_checked = $(event.currentTarget).prop('checked') || false;
+       if(ks_is_checked) {
+            this.$('tbody .o_list_record_selector').closest('tr').addClass('ks_highlight_row')
+       } else {
+            this.$('tbody .o_list_record_selector').closest('tr').removeClass('ks_highlight_row')
+       }
+    },
+
+    ks_advance_searchbar: function(e) {
+        if(e.keyCode == 8 && this.ks_allow_search) {
+            if(event.target.parentNode.children.length!==1) {
+                this.trigger_up("ks_remove_domain",{})
+                this.ks_allow_search = false;
+            }
+        }
+        if(e.keyCode == 13 && this.ks_allow_search) {
+            this.trigger_up("Ks_update_advance_search_renderer",{ksFieldName: e.currentTarget.dataset.ksField,KsSearchId:e.currentTarget.id,ksfieldtype:e.currentTarget.dataset.fieldType});
+            this.ks_allow_search = false;
+        }
+    },
+
+    ks_change_event: function(e) {
+            this.trigger_up("Ks_update_advance_search_renderer",{ksFieldName: e.currentTarget.dataset.ksField,KsSearchId:e.currentTarget.id,ksfieldtype:e.currentTarget.dataset.fieldType,ksFieldIdentity:e.currentTarget.dataset.fieldIdentity});
+            if(e.currentTarget.dataset.fieldType==='date' || e.currentTarget.dataset.fieldType==='datetime') {
+            if(!(e.currentTarget.id.indexOf("_end_date")>0)) {
+                if(e.currentTarget.parentElement.parentElement.children[1] !== undefined) {
+                    $(e.currentTarget.parentElement).addClass("ks_date_main")
+                    $(e.currentTarget.parentElement.parentElement.children[1]).addClass("ks_date_inner")
+                    $(e.currentTarget.parentElement.parentElement.children[1]).removeClass("d-none")
+                    $(e.currentTarget.parentElement.parentElement.children[1].children).removeClass("d-none")
+                }
+            }
+        }
+    },
+
+    ks_remove_popup_domain:function(e) {
+      var div =e.currentTarget.closest('.ks_inner_search')
+      this.trigger_up("ks_remove_domain",{ksDiv: div,ksfieldtype:e.currentTarget.parentElement.parentElement.children[1].dataset.fieldType,});
+      var i;
+      if(e.currentTarget.parentElement.parentElement!==null) {
+          if(e.currentTarget.parentElement.parentElement.children[1].id.indexOf("start_date")>0) {
+              $(e.currentTarget.parentElement.parentElement.children[1]).addClass("d-none")
+              $(e.currentTarget.parentElement.parentElement.children[1].parentElement.parentElement.children[1].children[0]).addClass("d-none")
+          }
+          else {
+               $(e.currentTarget.parentElement.parentElement).addClass("d-none")
+          }
+          var field = (e.currentTarget.parentElement.id).split("_value")
+          delete this.ks_field_popup[field[0]];
+      }
+
+    },
+
+    _onWindowClicked: function (event) {
+        this._super.apply(this, arguments);
+        var $self = this
+
+        function sticky(){
+            $self.$el.find("table.o_list_view").each(function () {
+                    $(this).stickyTableHeaders({scrollableArea:  $(".o_content")[0], fixedOffset: 0.1});
+               });
+           }
+
+        function fix_body(position){
+             $("body").css({
+               'position': position,
+            });
+        }
+
+        if(this.$el){
+            if(this.$el.parents('.o_field_one2many').length===0){
+                    sticky();
+                    fix_body("fixed");
+                    $(window).unbind('resize', sticky).bind('resize', sticky);
+                    this.$el.css("overflow-x","visible");
+            }
+            else{
+                fix_body("relative");
+            }
+        }
+        var self = this
+        $("div[class='o_sub_menu']").css("z-index",4);
+
+        var self = this
+
+        if(event.target.className==="ks_hide_show_checkbox") {
+            if(typeof self.getParent().ks_update_columns === 'function'){
+                        self.getParent().ks_update_columns();
+            }
+        }
+        if(event.target.className==="ks_editable") {
+
+             $("#"+$(event.target).context.id).focus()
+             $(".cancel_button").removeClass("d-none")
+       }
+
+    },
+
+    });
+
+    AbstractView.include({
+
+
+        _processFieldsView: function (fieldsView, viewType) {
+            var fv = this._super.apply(this, arguments);
+            var ks_is_value_present = false;
+            if(fv.type === 'tree') {
+                for(var ks_fields = 0; ks_fields < Object.keys(fv.fields).length; ks_fields++) {
+                    ks_is_value_present = false
+                    for(var ks_arch_children = 0 ; ks_arch_children < fv.arch.children.length ; ks_arch_children++) {
+                        if(Object.keys(fv.fields)[ks_fields] === fv.arch.children[ks_arch_children].attrs.name) {
+                                ks_is_value_present =true
+                                break;
+                        }
+                    }
+                    if(!ks_is_value_present) {
+                           var a = {}
+                           a["tag"] = "field"
+                           a["attrs"] = {}
+                           a["attrs"]["name"] = Object.keys(fv.fields)[ks_fields]
+                           a["attrs"]["string"] = Object.values(fv.fields)[ks_fields].string
+                           a["attrs"]["invisible"] ="1"
+                           a["attrs"]["modifiers"] = {}
+                           a["attrs"]["modifiers"]["readonly"] = false
+                           a["attrs"]["modifiers"]["required"] = true
+                           a["attrs"]["modifiers"]["column_invisible"] = true
+                           a["attrs"]["modifiers"] = JSON.stringify(a["attrs"]["modifiers"])
+                           a["children"] = []
+                           fv.arch.children.push(a)
+
+                    }
+                }
+                for(var i=0 ; i<fv.arch.children.length;i++) {
+                    if(fv.arch.children[i].attrs.can_create){
+                        fv.arch.children[i].attrs.can_create = "false"
+                        fv.arch.children[i].attrs.can_write = "false"
+                    }
+                }
+            }
+
+            return fv;
+        },
+
+    });
+
+    BasicController.include({
+
+        canBeSaved: function (recordID) {
+             if($(".o_field_one2many").length === 0 && $(".o_form_editable").length === 0)
+                    return true;
+             else
+                    return this._super.apply(this,arguments);
+        },
+    });
+});

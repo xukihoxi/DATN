@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="ev_list_view_advance_search">
+        <t t-if="ks_type == 'many2one' or ks_type == 'char'">
+            <div class="ks_search">
+                <input autocomplete="off"
+                       class="custom-control-searchbar-advance"
+                       placeholder="Search..."
+                       t-att-data-field-identity="ks_field_identifier"
+                       t-att-data-field-type="ks_type"
+                       t-att-data-ks-field="ks_description"
+                       t-att-id="ks_id"
+                       type="text"/>
+            </div>
+        </t>
+        <t t-if="ks_type == 'date' or ks_type == 'datetime'">
+            <div class="ks_search">
+                <input autocomplete="off"
+                       class="custom-control-searchbar-change app_select_field_date"
+                       placeholder="Search..."
+                       t-att-data-field-identity="ks_field_identifier"
+                       t-att-data-field-type="ks_type"
+                       t-att-data-ks-field="ks_description"
+                       t-att-id="ks_id"
+                       type="text"/>
+            </div>
+        </t>
+        <t t-if="ks_type == 'selection'">
+            <div class="ks_search">
+                <select class="custom-control-searchbar-change"
+                        t-att-data-field-type="ks_type"
+                        t-att-data-ks-field="ks_description"
+                        t-att-id="ks_id">
+                    <option></option>
+                    <t t-foreach="ks_selection" t-as="option">
+                        <option t-att-value="option[0]"><t t-esc='option[1]' /></option>
+                    </t>
+                </select>
+
+            </div>
+        </t>
+    </t>
+</templates>

@@ -1,0 +1,68 @@
+
+from odoo import models, fields, api, _
+from odoo.exceptions import except_orm
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
+import logging
+
+_logger = logging.getLogger(__name__)
+
+
+class ServiceBooking(models.Model):
+    _name = 'service.booking'
+    _description = 'Service booking'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'create_date DESC'
+
+    name = fields.Char(string='Name', track_visibility='onchange')
+    type = fields.Selection([('service', 'Service Booking'), ('meeting', 'Customer meeting')],
+                            default='service', track_visibility='onchange')
+    customer_id = fields.Many2one('res.partner', string="Customer", track_visibility='onchange')
+    lead_id = fields.Many2one('crm.lead', string="Lead", track_visibility='onchange')
+    date = fields.Date(string="Date", track_visibility='onchange', copy=False)
+    time_from = fields.Datetime(string="Time From", track_visibility='onchange', copy=False)
+    services = fields.Many2many('product.product', string="Services", domain=[('product_tmpl_id.type', '=', 'service')])
+    state = fields.Selection([('ready', 'Ready'), ('met', 'Met'), ('cancel', 'Cancel')], default='ready', track_visibility='onchange')
+
+    @api.multi
+    def unlink(self):
+        for line in self:
+            if line.state != 'ready':
+                raise except_orm('Cảnh báo!', ('Không thể xóa bản ghi ở trạng thái khác sẵn sàng'))
+        super(ServiceBooking, self).unlink()
+
+    @api.model
+    def create(self, vals):
+        if vals.get('lead_id') != None:
+            lead_obj = self.env['crm.lead'].search([('id', '=', vals.get('lead_id'))])
+            lead_obj.x_state = 'meeting'
+        if not vals.get('name', False):
+            vals['name'] = self.get_service_booking_name(vals.get('type', 'service'))
+        if vals.get('lead_id') != None:
+            booking_obj = self.env['service.booking'].search([('state', '=', 'ready'), ('lead_id', '=', vals.get('lead_id'))])
+            if (booking_obj):
+                raise except_orm('Cảnh báo!', ("Cơ hội %s đang có 1 Booking/Meeting ở trạng thái sẵn sàng" % booking_obj.lead_id.name))
+        booking = super(ServiceBooking, self).create(vals)
+        return booking
+
+    def get_service_booking_name(self, type):
+        seq = 'ev_service_meeting_name_seq'
+        if type == 'service':
+            seq = 'ev_service_booking_name_seq'
+        return self.env['ir.sequence'].with_context(**self._context).next_by_code(seq)
+
+
+    @api.multi
+    def action_confirm(self):
+        self.write({'state': 'met'})
+
+    @api.multi
+    def action_cancel(self):
+        self.write({'state': 'cancel'})
+
+    @api.multi
+    def action_met(self):
+        self.write({'state': 'met'})
+
+

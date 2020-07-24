@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="assets_backend" name="ev_advanced_search_tree assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" type="text/css"
+                      href="/ev_advanced_search_tree/static/src/css/ev_list_view_manager.scss"/>
+                <script type="text/javascript"
+                        src="/ev_advanced_search_tree/static/src/js/ev_list_view_manager_controller.js"></script>
+                <script type="text/javascript"
+                        src="/ev_advanced_search_tree/static/src/js/ev_list_view_manager_renderer.js"></script>
+                <script type="text/javascript"
+                        src="/ev_advanced_search_tree/static/src/lib/stickytableheaders/jquery.stickytableheaders.js"></script>
+                <script type="text/javascript"
+                        src="/ev_advanced_search_tree/static/src/js/ev_sticky_headers.js"></script>
+            </xpath>
+        </template>
+    </data>
+</odoo>

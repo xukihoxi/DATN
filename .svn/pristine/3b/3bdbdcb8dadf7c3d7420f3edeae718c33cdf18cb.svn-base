@@ -1,0 +1,10 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models, SUPERUSER_ID, _
+from datetime import date
+from odoo.exceptions import UserError, ValidationError, MissingError
+
+class IziServiceCardUsing(models.Model):
+    _inherit = 'izi.service.card.using'
+
+    type = fields.Selection([('service', "Service"), ('card', "Card"), ('guarantee', "Guarantee"), ('bundle', "Bundle")], default='card', required=1)
+    therapy_prescription_id = fields.Many2one('therapy.prescription', string='Therapy Prescription')

@@ -1,0 +1,64 @@
+# -*- coding: utf-8 -*-
+
+from odoo import fields, models, api, _
+from datetime import timedelta, datetime, date
+from odoo.exceptions import ValidationError, except_orm, UserError
+
+class ActivityHistory(models.Model):
+    _name = 'activity.history'
+    _inherit = ['mail.thread']
+
+    name = fields.Char(string='Name', related='therapy_record_id.name')
+    therapy_record_id = fields.Many2one('therapy.record', string='Therapy Record', track_visibility='onchange')
+    user_id = fields.Many2one('res.users', string='User')
+    partner_id = fields.Many2one('res.partner', string='Partner', track_visibility='onchange')
+    mail_activity_type_id = fields.Many2one('mail.activity.type', string='Mail Activity Type')
+    type = fields.Selection([('out_of_medicine', 'Out of medicine'), ('customer_care', 'Customer care')], string='Type')
+    object = fields.Selection([('consultant', 'Consultant'), ('customer_care', 'Customer care')], string='Object')
+    date_deadline = fields.Datetime(string='Date Deadline')
+    partner_interaction_ids = fields.One2many('partner.interaction', 'activity_history_id', string='Partner Interaction')
+    state = fields.Selection([('new', 'New'), ('assigned', 'Assigned'), ('interacted', 'Interacted')], string='State', default='new')
+
+    # @api.model
+    # def create(self, vals):
+    #     res = super(ActivityHistory, self).create(vals)
+    #     if not vals.get('name') or vals['name'] == _('New'):
+    #         if vals['therapy_record_id']:
+    #             therapy_record = self.env['therapy.record'].search([('id', '=', vals['therapy_record_id'])])
+    #             partner_name = therapy_record.partner_id.name
+    #             name_activity = '[' + partner_name + ']'
+    #         vals['name'] = self.env['ir.sequence'].next_by_code('activity_history_name_seq')
+    #     return res
+
+    @api.multi
+    def action_assign(self):
+        for activity in self:
+            if not activity.user_id:
+                raise UserError(_("Người nhận chưa được chọn để giao!"))
+            if not activity.date_deadline:
+                raise UserError(_("Chưa có lịch giao!"))
+            activity.env['mail.activity'].sudo().create({
+                'activity_type_id': activity.mail_activity_type_id.id,
+                'res_model_id': activity.env.ref('izi_crm_interaction.model_activity_history').id,
+                'res_model': activity.env.ref('izi_crm_interaction.model_activity_history').name,
+                'res_id': activity.id,
+                'user_id': activity.user_id.id,
+                'date_deadline': activity.date_deadline,
+            })
+            activity.state = 'assigned'
+
+    def action_create_interaction(self):
+        self.ensure_one()
+        ctx = self.env.context.copy()
+        view = self.env.ref('izi_crm_interaction.partner_interaction_form_view')
+        return {
+            'name': _('Partner Interaction'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'partner.interaction',
+            'views': [(view.id, 'form')],
+            'view_id': view.id,
+            'target': '',
+            'context': ctx,
+        }

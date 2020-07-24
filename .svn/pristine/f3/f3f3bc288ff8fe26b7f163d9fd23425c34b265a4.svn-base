@@ -1,0 +1,42 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models, SUPERUSER_ID, _
+from datetime import date
+from odoo.exceptions import UserError, ValidationError, MissingError
+
+
+class TherapyBundleBarem(models.Model):
+    _name = 'therapy.bundle.barem'
+
+    name = fields.Char(string='Therapy bundle Barem')
+    value_bundle_max = fields.Float(string='Value Bundle Max')
+    value_bundle_min = fields.Float(string='Value Bundle Min')
+    therapy_bundle_barem_line_ids = fields.One2many('therapy.bundle.barem.line', 'therapy_bundle_barem_id', string='Bundle Line')
+    product_id = fields.Many2one('product.product', string='Service medicine')
+    active = fields.Boolean(default=True)
+    pos_order_id = fields.Many2one('pos.order', string='Pos Order')
+
+    @api.constrains('value_bundle_max', 'value_bundle_min')
+    def _check_value_bundle(self):
+        if self.value_bundle_min and self.value_bundle_max:
+            if self.value_bundle_min >= self.value_bundle_max:
+                raise ValidationError(_('Lỗi khoảng giá trị Barem!'))
+            for barem in self.env['therapy.bundle.barem'].search([('active', '=', True)]):
+                if barem.value_bundle_min < self.value_bundle_min < barem.value_bundle_max or barem.value_bundle_min < self.value_bundle_max < barem.value_bundle_max:
+                    raise ValidationError(_('Giá trị Barem nhập vào bị trùng với barem khác!'))
+                result_1 = barem.value_bundle_min - self.value_bundle_min
+                result_2 = barem.value_bundle_max - self.value_bundle_max
+                if result_1 != 0 and result_2 != 0 and (result_2 * result_1) <= 0:
+                    raise ValidationError(_('Giá trị Barem nhập vào bị trùng với barem khác!'))
+
+
+class TherapyBundleBaremLine(models.Model):
+    _name = 'therapy.bundle.barem.line'
+
+    name = fields.Char(string='Therapy bundle barem Line')
+    product_id = fields.Many2one('product.product', string='Product')
+    uom_id = fields.Many2one('product.uom', related='product_id.uom_id', string='Unit of  Measure', readonly=True)
+    qty = fields.Integer(string='Quantity')
+    note = fields.Char(string='Note')
+    therapy_bundle_barem_id = fields.Many2one('therapy.bundle.barem')
+
+

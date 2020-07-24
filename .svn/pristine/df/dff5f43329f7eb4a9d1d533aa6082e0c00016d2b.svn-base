@@ -1,0 +1,50 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models, SUPERUSER_ID, _
+from datetime import date
+from odoo.exceptions import UserError, ValidationError, MissingError
+
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    x_therapy_prescription_id = fields.Many2one('therapy.prescription', string='Therapy Prescription')
+    x_therapy_record_id = fields.Many2one('therapy.record', related='x_therapy_prescription_id.therapy_record_id', string='Therapy Record', store=True)
+
+    @api.multi
+    def button_validate(self):
+        res = super(StockPicking, self).button_validate()
+        if self.x_therapy_record_id:
+            for therapy_record_product_id in self.x_therapy_record_id.therapy_record_product_ids:
+                therapy_quantity_used = 0
+                for move_line in self.move_lines:
+                    if move_line.quantity_done !=0 and move_line.product_id.id == therapy_record_product_id.product_id.id:
+                        therapy_quantity_used += move_line.quantity_done
+                therapy_record_product_id.qty_used = therapy_quantity_used
+        return res
+
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    x_therapy_prescription_id = fields.Many2one('therapy.prescription', string='Therapy Prescription')
+    x_therapy_record_id = fields.Many2one('therapy.record', related='x_therapy_prescription_id.therapy_record_id', string='Therapy Record', store=True)
+
+
+# class StockImmediateTransfer(models.TransientModel):
+#     _inherit = 'stock.immediate.transfer'
+#
+#     @api.multi
+#     def process(self):
+#         backorder_wizard_dict = super(StockImmediateTransfer, self).process()
+#         if self.pick_ids:
+#             for stock_picking in self.pick_ids:
+#                 if stock_picking.therapy_record_id:
+#                     therapy_record_id = self.env['therapy.record'].search([('id', '=', stock_picking.therapy_record_id.id)])
+#                     for move_line in stock_picking.move_lines:
+#                         if move_line.quantity_done != 0:
+#                             therapy_quantity_used = 0
+#                             for therapy_record_product_id in therapy_record_id.therapy_record_product_ids:
+#                                 if move_line.product_id.id == therapy_record_product_id.product_id.id:
+#                                     therapy_quantity_used += move_line.quantity_done
+#                             therapy_record_product_id.qty_used = therapy_quantity_used
+#         return backorder_wizard_dict

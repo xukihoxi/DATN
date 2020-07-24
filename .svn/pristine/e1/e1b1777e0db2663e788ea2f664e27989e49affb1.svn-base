@@ -1,0 +1,59 @@
+from odoo import api, fields, models, _
+from odoo.exceptions import except_orm, UserError
+
+
+class IziCrmLead(models.Model):
+    _inherit = 'crm.stage'
+
+    x_code = fields.Char(string='Code')
+
+    _sql_constraints = {
+        ('unique_x_code', 'unique(x_code)', ' Mã phải là duy nhất!')
+    }
+
+    @api.model_cr
+    def init(self):
+        stage_new = self.env['crm.stage'].search([('id', '=', '1')])
+        if len(stage_new) == 1:
+            stage_new.update({
+                'name': 'Cơ hội',
+                'x_code': 'opportunity'
+            })
+        stage_qualified = self.env['crm.stage'].search([('id', '=', 2)])
+        if len(stage_qualified) == 1:
+            stage_qualified.update({
+                'name': 'Đặt hẹn',
+                'x_code': 'metting'
+            })
+        stage_proposition = self.env['crm.stage'].search([('id', '=', 3)])
+        if len(stage_proposition) == 1:
+            stage_proposition.update({
+                'name': 'Ra shop',
+                'x_code': 'shop'
+            })
+        stage_won = self.env['crm.stage'].search([('id', '=', 4)])
+        if len(stage_won) == 1:
+            stage_won.update({
+                'sequence': 4,
+                'x_code': 'win'
+            })
+        stage_false = self.env['crm.stage'].search([('id', '=', 5)])
+        if len(stage_false) == 1:
+            stage_false.update({
+                'sequence': 5,
+                'x_code': 'lose'
+            })
+        stage_confirm = self.env['crm.stage'].search([('name', '=', 'Xác nhận')])
+        if not stage_confirm:
+            stage_confirm.create({
+                'name': 'Xác nhận',
+                'probability': 70,
+                'sequence': 3,
+                'x_code': 'confirm'
+            })
+        else:
+            stage_confirm.update({
+                'probability': 70,
+                'sequence': 3,
+                'x_code': 'confirm'
+            })

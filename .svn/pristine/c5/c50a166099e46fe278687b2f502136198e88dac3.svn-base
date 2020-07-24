@@ -1,0 +1,4 @@
+# -*- coding: utf-8 -*-
+
+from . import shop_bed
+from . import crm_booking

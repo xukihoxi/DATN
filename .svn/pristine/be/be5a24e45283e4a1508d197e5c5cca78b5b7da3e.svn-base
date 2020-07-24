@@ -1,0 +1,128 @@
+from odoo import api, fields, models, SUPERUSER_ID, _
+from datetime import date
+from odoo.exceptions import UserError, ValidationError, MissingError
+
+
+class TherapyRecord(models.Model):
+    _name = 'therapy.record'
+
+    name = fields.Char(string='Therapy Record')
+    target_therapy = fields.Char('Target Therapy') # mục tiêu trị liệu
+    partner_id = fields.Many2one('res.partner', string='Partner')
+    x_code = fields.Char('Code')
+    x_birthday = fields.Date('Birthday')
+    x_level_age_id = fields.Many2one('level.age', string='Level Age', readonly=True)
+    street = fields.Char('Street')
+    state_id = fields.Many2one('res.country.state', 'State')
+    country_id = fields.Many2one('res.country', 'Country')
+    phone = fields.Char('Phone')
+    x_crm_lead_tag_ids = fields.Many2many('crm.lead.tag', 'Tag')
+    lead_id = fields.Many2one('crm.lead', string='Lead')
+    create_date = fields.Datetime('Create Date', default=fields.Datetime.now)
+    employee_id = fields.Many2one('hr.employee', 'Staff create')
+    body_index_ids = fields.One2many('body.index', 'therapy_record_id', 'Body Index')
+    prescription_task_ids = fields.One2many('prescription.task', 'therapy_record_id', 'Prescription Task') # phiếu chỉ định
+    pathology_information = fields.Text('Pathological Information') # thông tin bệnh lý
+    bundle_therapy_ids = fields.One2many('bundle.therapy', 'therapy_record_id', 'Bundle Therapy') # gói trị liệu
+    product_therapy_ids = fields.One2many('product.therapy', 'therapy_record_id', 'Product Therapy') #tổng sản phẩm điều trị còn trong hồ sơ (số ống thuốc tiêm, thuốc hỗ trợ, thuốc xanh, ...)
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        if self.partner_id:
+            self.x_code = self.partner_id.x_code
+            self.x_birthday = self.partner_id.x_birthday
+            self.x_level_age_id = self.partner_id.x_level_age_id.id
+            self.street = self.partner_id.street
+            self.state_id = self.partner_id.state_id.id
+            self.country_id = self.partner_id.country_id.id
+            self.phone = self.partner_id.phone
+            self.x_crm_lead_tag_ids = self.partner_id.x_crm_lead_tag_ids
+
+    def creat_order(self):
+        self.ensure_one()
+        ctx = self.env.context.copy()
+        ctx.update({
+            'default_partner_id': self.partner_id.id,
+        })
+        view = self.env.ref('point_of_sale.view_pos_pos_form')
+        return {
+            'name': _('Pos Order'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'pos.order',
+            'views': [(view.id, 'form')],
+            'view_id': view.id,
+            'target': '',
+            'context': ctx,
+        }
+
+
+class BodyIndex(models.Model):
+    _name = 'body.index'
+
+    name = fields.Char(string='Body Inde')
+    measure_of_waist = fields.Integer('Measure of Waist') # số đo vòng bụng
+    measure_of_chest = fields.Integer('Measure of Chest') # số đo ngực
+    measure_of_thigh = fields.Integer('Measure of Thigh') # số đo bắp đùi
+    measure_of_buttocks = fields.Integer('Measure of Buttocks')  # số đo mông
+    weight = fields.Integer('Weight')
+    high = fields.Integer('High')
+    after_time = fields.Integer('After time') # sau khoảng thời gian tiêm thuốc 5 - 10 - 15 - 20 - ...
+    note = fields.Char('Note')
+    therapy_record_id = fields.Many2one('therapy.record', 'Therapy Record')
+
+
+class PrescriptionTask(models.Model):
+    _name = 'prescription.task'
+
+    name = fields.Char('Prescription Task')
+    doctor_id = fields.Many2one('hr.employee', 'Doctor')
+    therapy_record_id = fields.Many2one('therapy.record', 'Therapy Record')
+    prescription_task_line_ids = fields.One2many('prescription.task.line', 'prescription_task_id', 'Prescription Task Line')
+    create_date = fields.Datetime('Create Date', default=fields.Datetime.now)
+    note = fields.Char('Note')
+
+
+class PrescriptionTaskLine(models.Model):
+    _name = 'prescription.task.line'
+
+    name = fields.Char('Prescription Task Line')
+    prescription_task_id = fields.Many2one('prescription.task', 'Prescription Task')
+    category = fields.Text('Category')
+    product_id = fields.Many2one('product.product', 'Product')
+    uom_id = fields.Many2one('product.uom', string='Unit of  Measure')
+    qty = fields.Integer(string='Qty')
+    note = fields.Char('Note')
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.product_id:
+            self.uom_id = self.product_id.product_tmpl_id.uom_id.id
+
+
+class BundleTherapy(models.Model):
+    _name = 'bundle.therapy'
+
+    name = fields.Char('Bundle Therapy')
+    therapy_record_id = fields.Many2one('therapy.record', 'Therapy Record')
+
+
+class ProductTherapy(models.Model):
+    _name = 'product.therapy'
+
+    name = fields.Char('Product Therapy')
+    therapy_record_id = fields.Many2one('therapy.record', 'Therapy Record')
+    product_id = fields.Many2one('product.product', 'Product')
+    uom_id = fields.Many2one('product.uom', string='Unit of  Measure')
+    qty = fields.Integer(string='Qty')
+    qty_actual = fields.Integer(string='Qty Actual')
+    qty_new = fields.Integer(string='Qty New')
+    date_therapy = fields.Date('Date Therapy')
+    note = fields.Char(string='Note')
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.product_id:
+            self.uom_id = self.product_id.product_tmpl_id.uom_id.id
+

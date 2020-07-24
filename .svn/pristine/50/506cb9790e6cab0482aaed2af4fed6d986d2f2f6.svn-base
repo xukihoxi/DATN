@@ -1,0 +1,166 @@
+# -*- coding: utf-8 -*-
+
+from odoo import models, fields, api
+from datetime import datetime, timedelta
+
+class ScanBarcodeServiceCardUsingLine(models.TransientModel):
+    _name = 'scan.barcode.izi.service.card.using.line'
+
+    name = fields.Char(string="Name")
+    message = fields.Text(string="Message")
+    upper_waist = fields.Float(string='Upper of Waist')  # eo trên
+    lower_waist = fields.Float(string='Lower of Waist')  # eo dưới
+    middle_waist = fields.Float(string='Middle Waist')  # eo giữa
+    arm = fields.Float(string='Arm')  # bắp tay
+    right_upper_thighs = fields.Float(string='Right Upper Thigh')  # bắp đùi phải trên
+    left_upper_thighs = fields.Float(string='Left Upper Thigh')  # bắp đùi trái trên
+    right_lower_thighs = fields.Float(string='Right lower Thigh')  # bắp đùi phải dưới
+    left_lower_thighs = fields.Float(string='Left lower Thigh')  # bắp đùi trái dưới
+    flank = fields.Float(string='Flank')  # hông
+    armpit = fields.Float(string='Armpit')  # Nách
+    lats = fields.Float(string='Lats')  # xoài
+    back = fields.Float(string='Back')  # lưng
+    weight = fields.Float(string='Weight')  # cân nặng
+    high = fields.Float(string='High')  # chiều cao
+    upper_abdomen = fields.Float(string='Upper Abdomen')  # bụng trên
+    middle_abdomen = fields.Float(string='Middle Abdomen')  # bụng giữa
+    abdomen = fields.Float(string='Abdomen')  # bụng dưới
+    right_upper_calf = fields.Float(string='Right Upper Calf')  # bắp chan phải trên
+    left_upper_calf = fields.Float(string='Left Upper Calf')  # bắp chan phải trên
+    right_lower_calf = fields.Float(string='Right Lower Calf')  # bắp chan phải trên
+    left_lower_calf = fields.Float(string='Left Lower Calf')  # bắp chan phải trên
+    measurement_time = fields.Datetime(string='Measurement  time')  # Thời gian đo
+    technician = fields.Many2one('hr.employee', string='Technicain')  # Kỹ thuật viên
+    note = fields.Char(string='Note')
+    check_invisible_therapy_body = fields.Boolean(default=False)
+
+    @api.onchange('name')
+    def onchange_name(self):
+        if self.name:
+            try:
+                using_line_id = int(self.name)
+                if using_line_id < -2147483648 or using_line_id > 2147483647:  # kiểm tra dữ liệu nhập có lớn hơn giá trị tối đa của int4
+                    return {
+                        'value': {
+                            'name': False,
+                            'message': 'Mã nhập không hợp lệ, liên hệ Admin! [%s]' % (str(self.name))
+                        }
+                    }
+                ObjUsingLine = self.env['izi.service.card.using.line']
+                using_line = ObjUsingLine.search([('id', '=', int(self.name))])
+                if using_line:
+                    str_service = '[%s]%s' % (str(using_line.service_id.default_code), str(using_line.service_id.name))
+                    str_customer = str(using_line.using_id.customer_id.name)
+                    str_bed = ''
+                    for bed in using_line.bed_ids:
+                        str_bed += '[%s]%s, ' % (str(bed.room_id.name), str(bed.name))
+                    str_employee = ''
+                    for employee in using_line.employee_ids:
+                        str_employee += '%s, ' % (str(employee.name))
+                    if using_line.state == 'new':
+                        message = 'Bắt đầu làm dịch vụ!\n' \
+                                  'Dịch vụ: %s\n' \
+                                  'Khách hàng: %s\n' \
+                                  'Giường: %s\n' \
+                                  'Nhân viên làm: %s' % (str(str_service), str(str_customer), str(str_bed), str(str_employee))
+                        using_line.action_confirm_bed()
+                        self.check_invisible_therapy_body = False
+                        self.name = False
+                    elif using_line.state == 'working':
+                        if using_line.service_id.product_tmpl_id.x_measure_ok:
+                            self.check_invisible_therapy_body = True
+                            message = False
+                        else:
+                            self.check_invisible_therapy_body = False
+                            message = 'Hoàn thành làm dịch vụ!\n' \
+                                      'Dịch vụ: %s\n' \
+                                      'Khách hàng: %s\n' \
+                                      'Giường: %s\n' \
+                                      'Nhân viên làm: %s' % (
+                                      str(str_service), str(str_customer), str(str_bed), str(str_employee))
+                            using_line.action_done()
+
+                    elif using_line.state == 'done':
+                        message = 'Công việc này đã hoàn thành, vui lòng không quét mã!\n' \
+                                  'Dịch vụ: %s\n' \
+                                  'Khách hàng: %s\n' \
+                                  'Giường: %s\n' \
+                                  'Nhân viên làm: %s' % (str(str_service), str(str_customer), str(str_bed), str(str_employee))
+                        self.name = False
+                    else:
+                        message = 'Trạng thái của công việc: %s' % (str(using_line.state))
+                        self.name = False
+                else:
+                    message = 'Không tìm thấy công việc có mã %s. Để nhanh chóng vui lòng liên hệ quầy để xác nhận công việc, hoặc kiểm tra lại quy trình in phiếu!' % (str(self.name))
+
+                self.message = message
+
+            except ValueError:
+                return {
+                    'value': {
+                        'name': False,
+                        'message': 'Chỉ nhập mã là chữ số!'
+                    }
+                }
+
+        else:
+            pass
+
+    @api.multi
+    def action_pass(self):
+        using_line = self.env['izi.service.card.using.line'].search([('id', '=', int(self.name))])
+        str_service = '[%s]%s' % (str(using_line.service_id.default_code), str(using_line.service_id.name))
+        str_customer = str(using_line.using_id.customer_id.name)
+        str_bed = ''
+        for bed in using_line.bed_ids:
+            str_bed += '[%s]%s, ' % (str(bed.room_id.name), str(bed.name))
+        str_employee = ''
+        for employee in using_line.employee_ids:
+            str_employee += '%s, ' % (str(employee.name))
+        message = 'Hoàn thành làm dịch vụ!\n' \
+                  'Dịch vụ: %s\n' \
+                  'Khách hàng: %s\n' \
+                  'Giường: %s\n' \
+                  'Nhân viên làm: %s' % (
+                      str(str_service), str(str_customer), str(str_bed), str(str_employee))
+        using_line.action_done()
+        self.name = False
+        self.message = message
+        self.check_invisible_therapy_body = False
+
+    @api.multi
+    def confirm(self):
+        using_line = self.env['izi.service.card.using.line'].search([('id', '=', int(self.name))])
+        using = self.env['izi.service.card.using'].search([('id', '=', using_line.using_id.id)])
+        therapy_prescription = self.env['therapy.prescription'].search([('id', '=', using.therapy_prescription_id.id)])
+        therapy_body = self.env['therapy.body.measure']
+        if therapy_prescription:
+            res = {
+                'upper_waist': self.upper_waist,
+                'lower_waist': self.lower_waist,
+                'middle_waist': self.middle_waist,
+                'arm': self.arm,
+                'right_upper_thighs': self.right_upper_thighs,
+                'left_upper_thighs': self.left_upper_thighs,
+                'right_lower_thighs': self.right_lower_thighs,
+                'left_lower_thighs': self.left_lower_thighs,
+                'flank': self.flank,
+                'armpit': self.armpit,
+                'lats':self.lats,
+                'back ': self.back,
+                'weight': self.weight,
+                'high': self.high,
+                'upper_abdomen': self.upper_abdomen,
+                'middle_abdomen': self.middle_abdomen,
+                'abdomen': self.abdomen,
+                'right_upper_calf': self.right_upper_calf,
+                'left_upper_calf': self.left_upper_calf,
+                'right_lower_calf': self.right_lower_calf,
+                'left_lower_calf': self.left_lower_calf,
+                'measurement_time': self.measurement_time,
+                'technician': self.technician,
+                'note': self.note,
+                'therapy_record_id': therapy_prescription.therapy_prescription.id
+            }
+            therapy_body.create(res)
+        self.action_pass()

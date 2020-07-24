@@ -1,0 +1,126 @@
+# -*- coding: utf-8 -*-
+
+from odoo import models, fields, api
+from datetime import date, datetime, timedelta
+from odoo.exceptions import ValidationError, except_orm
+
+
+class PartnerInteraction(models.Model):
+    _name = 'partner.interaction'
+    # _description = 'Partner interaction'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char(related='partner_id.name', string='Name', readonly=1, store=True)
+    partner_id = fields.Many2one('res.partner', string='Partner', track_visibility='onchange')
+    activity_history_id = fields.Many2one('activity.history', string='Activity history', track_visibility='onchange')
+    therapy_record_id = fields.Many2one('therapy.record', string='Therapy record', track_visibility='onchange')
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.uid, string='User',
+                              track_visibility='onchange')
+    expected_date = fields.Date(string="Expected date", default=fields.Date.context_today, track_visibility='onchange')
+    actual_date = fields.Date(string="Actual date", default=fields.Date.context_today, track_visibility='onchange')
+    mail_activity_type_id = fields.Many2one('mail.activity.type', string='Activity type', track_visibility='onchange')
+    content = fields.Text(string='Content', track_visibility='onchange')
+    read_therapy_record_start = fields.Datetime(string='Read therapy record start', track_visibility='onchange')
+    read_therapy_record_end = fields.Datetime(string='Read therapy record end', track_visibility='onchange')
+    read_time = fields.Float(string='Read time', track_visibility='onchange')
+    type = fields.Selection([('out_of_medicine', 'Out of medicine'), ('customer_care', 'Customer care')], string='type')
+    object = fields.Selection([('consultant', 'Consultant'), ('customer_care', 'Customer care')], string='Object')
+    state = fields.Selection([('new', 'New'), ('reading', 'Reading'), ('processing', 'Processing'), ('done', 'Done')],
+                             string='State', default='new', track_visibility='onchange')
+
+    # @api.onchange('read_therapy_record_start', 'read_therapy_record_end')
+    # def _onchange_read_therapy_record_start_read_therapy_record_end(self):
+    #     if self.read_therapy_record_start and self.read_therapy_record_end:
+    #         self.read_time
+
+    @api.multi
+    def action_start_read_therapy_record(self):
+        # '- Cập nhật "Thời gian bắt đầu đọc HS"
+        # - Mở formview HSTL
+        for interaction in self:
+            interaction.write({
+                'read_therapy_record_start': datetime.now(),
+                'state': 'reading'
+            })
+            view_id = self.env.ref('izi_therapy_record.izi_view_therapy_record_form').id
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'therapy.record',
+                'res_id': interaction.therapy_record_id.id,
+                'view_type': 'form',
+                'view_mode': 'form',
+                'views': [(view_id, 'form')],
+                'target': 'current',
+            }
+
+    @api.multi
+    def action_end_read_therapy_record(self):
+        for interaction in self:
+            interaction.write({
+                'read_therapy_record_end': datetime.now(),
+                'state': 'processing'
+            })
+
+    @api.multi
+    def action_done(self):
+        '''
+        - Hoàn thành mail.activity tương ứng (xóa mail.activity)
+        - Nếu đối tượng là CSKH và type là  "Nhắc lịch chăm sóc" thì Cập nhật lại ngày tường tác gần nhất trên HSTL
+        - Nếu ngày tương tác gần nhất trên HSTL vừa được cập nhật khác so với ngày tương tác dự kiến trên tương tác thì:
+          + Quét tất cả các nhắc lịch của HSTL có type = 'Nhắc lịch chăm sóc' và đối tượng là CSKH sau thời điểm tương tác gần nhất
+          + Nếu có dữ liệu thì update date_deadline theo cấu hình của nhóm dịch vụ
+          + Nếu không có dữ liệu thì gọi hàm tạo lịch nhắc của HSTL
+        - Cập nhật trạng thái của  "Lịch nhắc": "Đã tương tác"
+        - Cập nhật trạng thái của  "Tương tác": "Hoàn thành"
+        '''
+        for interaction in self:
+            mail_activities = self.env['mail.activity'].search(
+                [('res_model', '=', interaction.activity_history_id._name),
+                 ('res_id', '=', interaction.activity_history_id.id)])
+            if mail_activities:
+                for activity in mail_activities:
+                    activity.action_done()
+            if interaction.type == 'customer_care' and interaction.object == 'customer_care':
+                interaction.therapy_record_id.out_of_medicine_date = interaction.actual_date
+
+            # cần làm thêm
+
+            interaction.activity_history_id.state = 'interacted'
+            interaction.state = 'done'
+
+    @api.multi
+    def action_create_meeting(self):
+        for interaction in self:
+            view_id = self.env.ref('izi_crm_interaction.partner_interaction_meeting_form_view').id
+            context = {
+                'default_partner_id': interaction.partner_id.id,
+            }
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'partner.interaction.meeting',
+                'res_id': False,
+                'view_type': 'form',
+                'view_mode': 'form',
+                'views': [(view_id, 'form')],
+                'target': 'new',
+                'context': context
+            }
+
+    @api.multi
+    def action_create_claim(self):
+        for interaction in self:
+            view_id = self.env.ref('izi_crm_claim.crm_claim_form_view').id
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'crm.claim',
+                'res_id': False,
+                'view_type': 'form',
+                'view_mode': 'form',
+                'views': [(view_id, 'form')],
+                'target': 'current',
+            }
+
+    @api.multi
+    def action_back_to_draft(self):
+        for interaction in self:
+            interaction.state = 'new'

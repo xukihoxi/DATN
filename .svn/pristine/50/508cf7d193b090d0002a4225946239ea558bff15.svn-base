@@ -1,0 +1,10 @@
+# -*- coding: utf-8 -*-
+
+from odoo import models, fields, api
+
+class crm_booking(models.Model):
+    _name = 'crm.shop.bed'
+
+    name = fields.Char("Name")
+    config_id = fields.Many2one('pos.config', "Config")
+    description = fields.Char("Description")

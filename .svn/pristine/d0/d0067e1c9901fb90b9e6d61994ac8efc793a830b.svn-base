@@ -1,0 +1,19 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models, SUPERUSER_ID, _
+from datetime import date
+from odoo.exceptions import UserError, ValidationError, MissingError
+
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    therapy_prescription_id = fields.Many2one('therapy.prescription', string='Therapy Prescription')
+    therapy_record_id = fields.Many2one('therapy.record', related='therapy_prescription_id.therapy_record_id', string='Therapy Record', store=True)
+
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    x_therapy_prescription_id = fields.Many2one('therapy.prescription', string='Therapy Prescription')
+    x_therapy_record_id = fields.Many2one('therapy.record', related='x_therapy_prescription_id.therapy_record_id', string='Therapy Record', store=True)
+

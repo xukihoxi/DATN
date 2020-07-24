@@ -1,0 +1,16 @@
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+{
+    'name': 'ev_advanced_search_tree',
+    'version': '1.0',
+    'category': 'Advanced search Tool',
+    'summary': 'Advanced Search in Tree View in Odoo',
+    'author': 'Dev Happy',
+	'license': 'AGPL-3',
+    'depends': ['web'],
+    'data': ['views/template_view.xml',],
+    'qweb': ['static/src/xml/ListView.xml',],
+    'installable': True,
+    'auto_install': False,
+    'application': False,
+}

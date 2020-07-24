@@ -1,0 +1,165 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models, SUPERUSER_ID, _
+from datetime import date, datetime
+from odoo.exceptions import UserError, ValidationError, MissingError
+
+
+class TherapyPrescription(models.Model):
+    _name = 'therapy.prescription'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'resource.mixin']
+
+    name = fields.Char(string='Therapy prescription')
+    partner_id = fields.Many2one('res.partner', string='Partner', track_visibility='onchange')
+    user_id = fields.Many2one('res.users', string='Prescriber', track_visibility='onchange')
+    create_date = fields.Datetime(string='Create Date', default=fields.Datetime.now)
+    time_prescription = fields.Datetime(string='Prescription Time', default=fields.Datetime.now)
+    note = fields.Text(string='Note')
+    state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirm')], default='draft', string='State')
+    therapy_prescription_line_warranty_ids = fields.One2many('therapy.prescription.line', 'therapy_prescription_id',
+                                                             string='Therapy prescription line',
+                                                             domain=lambda self: [('type', '=', 'warranty')])
+    therapy_prescription_line_remain_ids = fields.One2many('therapy.prescription.line', 'therapy_prescription_id',
+                                                           string='Therapy prescription line',
+                                                           domain=lambda self: [('type', '=', 'remain')])
+    therapy_prescription_line_medicine_ids = fields.One2many('therapy.prescription.line', 'therapy_prescription_id',
+                                                             string='Therapy prescription line',
+                                                             domain=lambda self: [('type', '=', 'medicine')])
+    therapy_record_id = fields.Many2one('therapy.record', 'Therapy Record')
+    izi_service_card_using_ids = fields.One2many('izi.service.card.using', 'therapy_prescription_id',
+                                                 string='Using service card')
+    stock_picking_ids = fields.One2many('stock.picking', 'therapy_prescription_id', string='Stock Picking')
+
+    @api.model
+    def default_get(self, fields):
+        res = super(TherapyPrescription, self).default_get(fields)
+        res['user_id'] = self._context.get('uid')
+        return res
+
+    #todo đang viết dở
+    @api.multi
+    def action_get_product_remain(self):
+        for task in self:
+            if task.therapy_record_id:
+                task.therapy_prescription_line_remain_ids = False
+                arr_therapy_prescription_line_remain = []
+                arr_therapy_product_onhand = []
+                therapy_id = task.therapy_record_id.id
+                # todo lấy SL xí phần
+                for therapy_prescription_id in therapy_id.therapy_prescription_ids:
+                    #todo láy SL xí phần của thẻ sddv
+                    using_service_card_not_done_ids = task.env['izi.service.card.using'].search(
+                        [('therapy_prescription_id', '=', therapy_prescription_id.id),
+                         ('state', '!=', 'done')])
+                    if using_service_card_not_done_ids:
+                        for using_service_card_not_done_id in using_service_card_not_done_ids:
+                            for service_card_id in using_service_card_not_done_id.service_card_ids:
+                                arr_therapy_product_onhand.append({
+                                    'service': service_card_id.service_id.id,
+                                    'qty': service_card_id.quantity,
+                                })
+                    # todo láy SL xí phần của thẻ sddv
+                    stock_picking_not_done_ids = task.env['stock.picking'].search(
+                        [('therapy_prescription_id', '=', therapy_prescription_id.id),
+                         ('state', '!=', 'done')])
+                    if stock_picking_not_done_ids:
+                        for stock_picking_not_done_id in stock_picking_not_done_ids:
+                            for move_line in stock_picking_not_done_id.move_lines:
+                                arr_therapy_product_onhand.append({
+                                    'product_id': service_card_id.service_id.id,
+                                    'qty': service_card_id.quantity,
+                                })
+                # todo lấy  SL tồn trên HS
+                products_therapy = task.env['therapy.record.product'].search([('therapy_record_id', '=', therapy_id)])
+                if products_therapy:
+                    for product_therapy in products_therapy:
+                        if product_therapy.qty_available != 0:
+                            arr_therapy_prescription_line_remain.append((0, 0, {
+                                'product_id': product_therapy.product_id.id,
+                                'qty': 0,
+                                'qty_available': product_therapy.qty_available,
+                                'uom_id': product_therapy.uom_id.id,
+                                'note': '',
+                                'type': 'remain'
+                            }))
+
+                    # # thêm SL vào phiếu chỉ định
+                    # task.therapy_prescription_line_remain_ids = arr_therapy_prescription_line_remain
+                    # task.therapy_prescription_line_remain_ids = False
+
+    @api.multi
+    def action_confirm(self):
+        for task in self:
+            task.write({
+                'state': 'confirm',
+            })
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            array_date = vals['create_date'].split(' ')[0].split('-')
+            create_date = str(array_date[2]) + str(array_date[1]) + str(array_date[0])
+            partner_id = self.env['res.partner'].search([('id', '=', vals['partner_id'])])
+            vals['name'] = 'PCD_%s_%s' % (str(partner_id.x_code), str(create_date))
+        return super(TherapyPrescription, self).create(vals)
+
+    @api.multi
+    def write(self, vals):
+        if vals.get('partner_id'):
+            array_date = self.create_date.split(' ')[0].split('-')
+            create_date = str(array_date[2]) + str(array_date[1]) + str(array_date[0])
+            partner_id = self.env['res.partner'].search([('id', '=', vals['partner_id'])])
+            vals['name'] = 'PCD_%s_%s' % (str(partner_id.x_code), str(create_date))
+        return super(TherapyPrescription, self).write(vals)
+
+
+class PrescriptionTaskLine(models.Model):  # Phiếu chỉ định Line
+    _name = 'therapy.prescription.line'
+
+    name = fields.Char('Therapy prescription line')
+    therapy_prescription_id = fields.Many2one('therapy.prescription', 'Therapy prescription')
+    type = fields.Selection(
+        [('warranty', 'Warranty'), ('remain', 'Remain'), ('medicine', 'Medicine')], string='Type')
+    product_id = fields.Many2one('product.product', 'Product')
+    uom_id = fields.Many2one('product.uom', string='Unit of  Measure')
+    qty = fields.Integer(string='Quantity')  # Số lượng
+    qty_available = fields.Integer(string='Quantity available')  # SỐ lượng khả dụng
+    price_unit = fields.Float(string='Price unit', default=0)
+    amount = fields.Float(string='Amount', default=0)
+    note = fields.Char(string='Note')
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.product_id:
+            self.uom_id = self.product_id.product_tmpl_id.uom_id.id
+            price = self.product_id.product_tmpl_id.list_price
+            partner_id = self.therapy_prescription_id.partner_id
+            tax_ids = self.product_id.taxes_id.filtered(
+                lambda r: not partner_id.company_id or r.company_id == partner_id.company_id)
+            fpos = partner_id.property_account_position_id
+            tax_ids_after_fiscal_position = fpos.map_tax(tax_ids, self.product_id, partner_id) if fpos else tax_ids
+            fpos = partner_id.property_account_position_id
+            self.price_unit = self.env['account.tax']._fix_tax_included_price_company(price, self.product_id.taxes_id,
+                                                                                      tax_ids_after_fiscal_position,
+                                                                                      partner_id.company_id)
+
+    @api.onchange('qty')
+    def _onchange_qty(self):
+        if self.qty and self.product_id:
+            self.amount = self.price_unit * self.qty
+
+    @api.onchange('qty_available')
+    def _onchange_qty_actual(self):
+        if self.qty_available and self.product_id:
+            self.amount = self.qty_available * self.price_unit
+
+
+class IziServiceCardUsing(models.Model):
+    _inherit = 'izi.service.card.using'
+
+    therapy_prescription_id = fields.Many2one('therapy.prescription', string='Therapy Prescription')
+
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    therapy_prescription_id = fields.Many2one('therapy.prescription', string='Therapy Prescription')

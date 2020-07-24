@@ -1,0 +1,72 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="scan_barcode_izi_service_card_using_line_form">
+            <field name="name">Scan Barcode</field>
+            <field name="model">scan.barcode.izi.service.card.using.line</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="check_invisible_therapy_body" invisible="1"/>
+                        <button name="confirm" type="object" string="Confirm" attrs="{'invisible':[('check_invisible_therapy_body','!=', True)]}" class="oe_highlight"/>
+                        <button name="action_pass" type="object" string="Pass" attrs="{'invisible':[('check_invisible_therapy_body','!=', True)]}"/>
+                    </header>
+                    <sheet>
+                        <h1 class="text-center">
+<!--                            <field name="name" required="1" widget="enter2action" attrs="{'action_element_class': '.izi_btn_onchange_name'}"/>-->
+                            <field name="name" required="1" />
+                        </h1>
+<!--                        <button name="onchange_name" type="object" string="Huyen" class="oe_edit_only oe_highlight izi_btn_onchange_name"-->
+
+<!--                        />-->
+
+                        <label for="message"/>
+                        <field name="message" readonly="1"/>
+                        <h2 class="text-center" attrs="{'invisible':[('check_invisible_therapy_body','!=',True)]}">Thông số cơ thể</h2>
+                         <group attrs="{'invisible':[('check_invisible_therapy_body','!=',True)]}">
+                            <group >
+                                <field name="measurement_time"/>
+                                <field name="technician" options="{'no_create': True}"/>
+                                <field name="weight"/>
+                                <field name="high"/>
+                                <field name="upper_waist"/>
+                                <field name="lower_waist"/>
+                                <field name="middle_waist"/>
+                                <field name="arm"/>
+                                <field name="right_upper_thighs"/>
+                                <field name="left_upper_thighs"/>
+                                <field name="right_lower_thighs"/>
+                                <field name="left_lower_thighs"/>
+                            </group>
+                            <group>
+                                <field name="flank"/>
+                                <field name="armpit"/>
+                                <field name="lats"/>
+                                <field name="back"/>
+                                <field name="upper_abdomen"/>
+                                <field name="middle_abdomen"/>
+                                <field name="abdomen"/>
+                                <field name="right_upper_calf"/>
+                                <field name="left_upper_calf"/>
+                                <field name="right_lower_calf"/>
+                                <field name="left_lower_calf"/>
+                            </group>
+                            <field name="note"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_scan_barcode_izi_service_card_using_line">
+            <field name="name">Scan Barcode</field>
+            <field name="res_model">scan.barcode.izi.service.card.using.line</field>
+            <field name="view_mode">form</field>
+            <field name="view_type">form</field>
+        </record>
+
+        <menuitem name="Scan Barcode" id="menu_scan_barcode_izi_service_card_using_line"
+                  parent="izi_pos_custom_backend.menu_point_of_sale_service"
+                  action="action_scan_barcode_izi_service_card_using_line"
+                  groups="group_scan_barcode"/>
+    </data>
+</odoo>

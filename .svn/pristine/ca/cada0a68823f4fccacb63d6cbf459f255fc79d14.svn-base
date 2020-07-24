@@ -1,0 +1,160 @@
+# -*- coding: utf-8 -*-
+
+from odoo import models, fields, api
+from datetime import date, datetime, timedelta
+from odoo.exceptions import ValidationError, except_orm
+
+
+class PartnerInteraction(models.Model):
+    _name = 'partner.interaction'
+    _description = 'Partner interaction'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char(related='partner_id.name', string='Name', readonly=1, store=True)
+    partner_id = fields.Many2one('res.partner', string='Partner', track_visibility='onchange')
+    activity_history_id = fields.Many2one('activity.history', string='Activity history', track_visibility='onchange')
+    therapy_record_id = fields.Many2one('therapy.record', string='Therapy record', track_visibility='onchange')
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.uid, string='User',
+                              track_visibility='onchange')
+    expected_date = fields.Date(string="Expected date", default=fields.Date.context_today, track_visibility='onchange')
+    actual_date = fields.Date(string="Actual date", default=fields.Date.context_today, track_visibility='onchange')
+    mail_activity_type_id = fields.Many2one('mail.activity.type', string='Activity type', track_visibility='onchange')
+    content = fields.Text(string='Content', track_visibility='onchange')
+    read_therapy_record_start = fields.Datetime(string='Read therapy record start', track_visibility='onchange')
+    read_therapy_record_end = fields.Datetime(string='Read therapy record end', track_visibility='onchange')
+    read_time = fields.Float(string='Read time')
+    type = fields.Selection([('out_of_medicine', 'Out of medicine'), ('customer_care', 'Customer care')], string='type')
+    object = fields.Selection([('consultant', 'Consultant'), ('customer_care', 'Customer care')], string='Object')
+    state = fields.Selection([('new', 'New'), ('reading', 'Reading'), ('processing', 'Processing'), ('done', 'Done')],
+                             string='State', default='new', track_visibility='onchange')
+
+    @api.onchange('read_therapy_record_start', 'read_therapy_record_end')
+    def _onchange_read_therapy_record_start_read_therapy_record_end(self):
+        if self.read_therapy_record_start and self.read_therapy_record_end:
+            read_therapy_record_start = datetime.strptime(self.read_therapy_record_start, '%Y-%m-%d %H:%M:%S')
+            read_therapy_record_end = datetime.strptime(self.read_therapy_record_end, '%Y-%m-%d %H:%M:%S')
+            self.read_time = (read_therapy_record_end-read_therapy_record_start).seconds / 60 / 60
+
+    @api.multi
+    def action_start_read_therapy_record(self):
+        # '- Cập nhật "Thời gian bắt đầu đọc HS"
+        # - Mở formview HSTL
+        for interaction in self:
+            interaction.write({
+                'read_therapy_record_start': fields.Datetime.now(),
+                'state': 'reading'
+            })
+            interaction._onchange_read_therapy_record_start_read_therapy_record_end()
+            view_id = self.env.ref('izi_therapy_record.izi_view_therapy_record_form').id
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'therapy.record',
+                'res_id': interaction.therapy_record_id.id,
+                'view_type': 'form',
+                'view_mode': 'form',
+                'views': [(view_id, 'form')],
+                'target': 'current',
+            }
+
+    @api.multi
+    def action_end_read_therapy_record(self):
+        for interaction in self:
+            interaction.write({
+                'read_therapy_record_end': fields.Datetime.now(),
+                'state': 'processing'
+            })
+            interaction._onchange_read_therapy_record_start_read_therapy_record_end()
+
+    @api.multi
+    def action_done(self):
+        for interaction in self:
+            if interaction.activity_history_id:
+                interaction.activity_history_id.state = 'interacted'
+                mail_activities = self.env['mail.activity'].search(
+                    [('res_model', '=', interaction.activity_history_id._name),
+                     ('res_id', '=', interaction.activity_history_id.id)])
+                if mail_activities:
+                    for activity in mail_activities:
+                        activity.action_done()
+                if interaction.type == 'customer_care' and interaction.object == 'customer_care':
+                    interaction.therapy_record_id.interaction_last_date = interaction.actual_date
+                if interaction.actual_date != interaction.expected_date:
+                    activity_histories = self.env['activity.history'].search([('therapy_record_id', '=', interaction.therapy_record_id.id),
+                                                         ('type', '=', 'customer_care'),
+                                                         ('object', '=', 'customer_care'),
+                                                         ('date_deadline', '>', interaction.actual_date),
+                                                         ('state', 'in', ['new', 'assigned']),
+                                                        ('id', '!=', interaction.activity_history_id.id)], order="date_deadline asc")
+                    if activity_histories:
+                        if not interaction.therapy_record_id.categ_id.x_product_categ_remind_ids: raise except_orm("Thông báo", "Nhóm dịch vụ %s của hồ sơ %s chưa cấu hình nhắc lịch." % (str(interaction.therapy_record_id.categ_id.name), str(interaction.therapy_record_id.name)))
+                        date_deadline = datetime.strptime(interaction.actual_date, "%Y-%m-%d")
+                        for product_categ_remind in interaction.therapy_record_id.categ_id.x_product_categ_remind_ids:
+                            if product_categ_remind.repeat:
+                                date_number = product_categ_remind.date_number
+                        if not date_number: raise except_orm("Thông báo", "Cấu hình nhắc lịch còn thiếu cấu hình tạo nhắc lịch tự động.")
+                        for activity_history in activity_histories:
+                            mail_activities = self.env['mail.activity'].search(
+                                [('res_model', '=', activity_history._name),
+                                 ('res_id', '=', activity_history.id)])
+                            if mail_activities:
+                                for activity in mail_activities:
+                                    activity.unlink()
+                            date_deadline += timedelta(days=date_number)
+                            activity_history.write({
+                                'date_deadline': date_deadline,
+                                'user_id': False,
+                                'state': 'new'
+                            })
+                    else:
+                        is_activity_constant = True
+                        self.env['therapy.record'].create_activity_history([interaction.therapy_record_id.id], is_activity_constant)
+            interaction.state = 'done'
+
+    @api.multi
+    def action_create_meeting(self):
+        for interaction in self:
+            user_id = interaction.partner_id.user_id
+            view_id = self.env.ref('izi_crm_interaction.partner_interaction_meeting_form_view').id
+            context = {
+                'default_partner_id': interaction.partner_id.id,
+                'default_user_id': user_id.id
+            }
+
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'partner.interaction.meeting',
+                'res_id': False,
+                'view_type': 'form',
+                'view_mode': 'form',
+                'views': [(view_id, 'form')],
+                'target': 'new',
+                'context': context
+            }
+
+    @api.multi
+    def action_create_claim(self):
+        for interaction in self:
+            view_id = self.env.ref('izi_crm_claim.crm_claim_form_view').id
+            context = {
+                'default_partner_id': interaction.partner_id.id,
+                'default_claim_date': fields.Datetime.now(),
+            }
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'crm.claim',
+                'res_id': False,
+                'view_type': 'form',
+                'view_mode': 'form',
+                'views': [(view_id, 'form')],
+                'target': 'current',
+                'context': context
+            }
+
+    @api.multi
+    def action_back_to_draft(self):
+        for interaction in self:
+            interaction.state = 'new'
+            interaction.read_therapy_record_start = None
+            interaction.read_therapy_record_end = None
+            interaction.read_time = None
+

@@ -1,0 +1,260 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models, SUPERUSER_ID, _
+from datetime import date, datetime
+from odoo.exceptions import UserError, ValidationError, MissingError, except_orm
+
+
+class IziServiceCardUsing(models.Model):
+    _inherit = 'izi.service.card.using'
+
+    type = fields.Selection([('service', "Service"), ('card', "Card"), ('guarantee', "Guarantee"), ('bundle', "Bundle")], default='card', required=1)
+    therapy_prescription_id = fields.Many2one('therapy.prescription', string='Therapy Prescription')
+    therapy_record_id = fields.Many2one('therapy.record', related='therapy_prescription_id.therapy_record_id', string='Therapy Record', store=True)
+    service_bundle_ids = fields.One2many('izi.service.card.using.line', 'using_id', "Service Bundle", copy=False)
+
+
+    @api.onchange('therapy_prescription_id')
+    def _onchange_customer(self):
+        if self.therapy_prescription_id:
+            self.customer_id = self.therapy_prescription_id.partner_id.id
+
+    @api.multi
+    def action_done(self):
+        res = super(IziServiceCardUsing, self).action_done()
+        #todo xử lý cập nhật tồn cho hồ sơ trị liệu
+        if self.therapy_prescription_id:
+            therapy_record_id = self.env['therapy.record'].search([('id', '=', self.therapy_record_id.id)])
+            for therapy_record_product_id in therapy_record_id.therapy_record_product_ids:
+                therapy_quantity_used = 0
+                for service_card1_id in self.service_bundle_ids:
+                    if service_card1_id.service_id.id == therapy_record_product_id.product_id.id:
+                        therapy_quantity_used += service_card1_id.quantity
+                therapy_record_product_id.qty_used = therapy_quantity_used
+        self.state = 'done'
+        #todo xử lý nhắc lịch .....
+
+    def _check_required_service(self):
+        param_obj = self.env['ir.config_parameter']
+        code = param_obj.get_param('default_code_product_category_material')
+        if not code:
+            raise ValidationError(
+                _(
+                    u"Bạn chưa cấu hình thông số hệ thống cho mã nhóm xuất NVL là default_code_product_category_material. Xin hãy liên hệ với người quản trị."))
+        list = code.split(',')
+        if self.state != 'draft':
+            raise except_orm('Cảnh báo!',
+                             ("Trạng thái sử dụng dịch vụ đã thay đổi. Vui lòng F5 hoặc load lại trang"))
+        else:
+            if self.state != 'draft':
+                raise except_orm('Cảnh báo!',
+                                 ("Trạng thái sử dụng dịch vụ đã thay đổi. Vui lòng F5 hoặc load lại trang"))
+        for line in self.service_card_ids:
+            if line.quantity == 0:
+                line.unlink()
+            else:
+                if (len(line.employee_ids) + len(line.doctor_ids)) == 0:
+                    raise except_orm('Cảnh báo!', ('Bạn cần chọn kỹ thuật viên trước khi xác nhận'))
+        if self.env.context.get('default_type', False):
+            context = dict(self.env.context or {})
+            del context['default_type']
+            self = self.with_context(context)
+        if not self.customer_id:
+            raise except_orm('Cảnh báo!', ("Bạn phải chọn khách hàng trước khi xác nhận!"))
+        pos_session = self.env['pos.session']
+        pos_config_id = self.env.user.x_pos_config_id.id
+        my_session = pos_session.search([('config_id', '=', pos_config_id), ('state', '=', 'opened')])
+        if not my_session:
+            raise except_orm("LỖI", "Không có phiên POS nào đang mở. Xin hãy mở phiên trước khi thao tác !!")
+        else:
+            self.pos_session_id = my_session.id
+
+    def _check_service_exported_stock(self):
+        count_service_pttm = 0
+        count_service = 0
+        for line in self.service_card_ids:
+            if line.service_id.product_tmpl_id.x_type_service == 'clinic' and line.service_id.product_tmpl_id.categ_id.x_category_code in list and line.service_id.bom_service_count > 0:
+                count_service_pttm += 1
+                if not self.pos_session_id.config_id.x_cosmetic_surgery_picking_type:
+                    raise except_orm("Thông báo!", ('Vui lòng cấu hình lý do xuất kho PTTM'))
+                picking_type_pttm_id = self.pos_session_id.config_id.x_cosmetic_surgery_picking_type.id
+            elif line.service_id.product_tmpl_id.x_type_service == 'spa' and line.service_id.product_tmpl_id.categ_id.x_category_code in list and line.service_id.bom_service_count > 0:
+                count_service += 1
+                if not self.pos_session_id.config_id.x_material_picking_type_id:
+                    raise except_orm("Thông báo!", ('Vui lòng cấu hình lý do xuất kho hàng làm'))
+                picking_type_id = self.pos_session_id.config_id.x_material_picking_type_id.id
+            elif line.service_id.product_tmpl_id.x_type_service == 'none':
+                raise except_orm("Thông báo!",
+                                 ('Kiểm tra lại cấu hình loại dịch vụ "%s"' % line.service_id.name))
+        return [count_service_pttm, count_service, picking_type_pttm_id, picking_type_id]
+
+    @api.multi
+    def action_confirm_bundle(self):
+        if self.type == 'bundle':
+            # kiểm tra dịch vụ có sử dụng bác sĩ?
+            self._check_service_card_ids_service_card1_ids()
+            #kiểm tra đã chọn bác sĩ, khách hàng, tư vấn viên,.. hay chưa? kiểm tra phiên bán hàng
+            self._check_required_service()
+            #kiểm tra số lượng sử dụng trong đơn sddv
+            count = 0
+            for line in self.service_card_ids:
+                if line.quantity != 0:
+                    count += 1
+            if count == 0:
+                raise except_orm('Cảnh báo!',
+                                 ("Số lượng dịch vụ không thể bằng không.Vui lòng xóa hoặc thay đổi số lượng!"))
+            #kiểm tra dịch vụ có nằm trong category xuất nguyên vật liệu k?
+            count_service_bom = 0
+            count_service_viet = 0
+            code = self.env['ir.config_parameter'].get_param('default_code_product_category_material')
+            list = code.split(',')
+            for line in self.service_card_ids:
+                if line.service_id.product_tmpl_id.categ_id.x_category_code in list:
+                    count_service_viet += 1
+                if line.service_id.bom_service_count >= 1:
+                    count_service_bom += 1
+                    self._get_material_user(line.quantity, line.service_id, self.id, line)
+            if count_service_viet == 0:
+                self.state = 'working'
+                self.date_start = datetime.now()
+            else:
+                if count_service_bom > 0:
+                    tmp_service_obj = self.env['tmp.service.card.using'].search(
+                        [('user_service_card_id', '=', self.id)])
+                    view = self.env.ref('izi_use_service_card.tmp_pos_use_material_view')
+                    return {
+                        'name': _('Chosse?'),
+                        'type': 'ir.actions.act_window',
+                        'view_type': 'form',
+                        'view_mode': 'form',
+                        'res_model': 'tmp.service.card.using',
+                        'views': [(view.id, 'form')],
+                        'view_id': view.id,
+                        'target': 'new',
+                        'res_id': tmp_service_obj.id,
+                        'context': self.env.context,
+                    }
+                else:
+                    self.state = 'wait_material'
+                    using_stock_move = self.env['izi.using.stock.move.line']
+                    use_material_obj = self.env['pos.user.material']
+                    employess_ids = []
+                    service_ids = []
+                    # Kiểm tra xem dịch vụ được xuất từ kho nào
+                    count_service_pttm, count_service, picking_type_pttm_id, picking_type_id = self._check_service_exported_stock()
+                    # xử lý tạo đơn xuất nguyên vật liệu
+                    for line in self.service_card_ids:
+                        if count_service_pttm > 0:
+                            count_quantity = 0
+                            argvss = {
+                                'using_service_id': self.id,
+                                'date': self.redeem_date,
+                                'origin': self.name,
+                                'customer_id': self.customer_id.id,
+                                'picking_type_id': picking_type_pttm_id,
+                                'type_service': 'clinic',
+                            }
+                            use_material_surgery_id = use_material_obj.create(argvss)
+                            for line in self.service_card_ids:
+                                if line.service_id.product_tmpl_id.x_type_service == 'clinic' and line.service_id.product_tmpl_id.categ_id.x_category_code in list and line.service_id.bom_service_count > 0:
+                                    count_quantity += line.quantity
+                                    for x in line.employee_ids:
+                                        employess_ids.append(x.id)
+                                    for y in line.doctor_ids:
+                                        employess_ids.append(y.id)
+                                    service_ids.append(line.service_id.id)
+                                    service_bom_obj = self.env['service.bom'].search(
+                                        [('product_tmpl_id', '=', line.service_id.product_tmpl_id.id),
+                                         ('product_id', '=', line.service_id.id)])
+                                    if len(service_bom_obj) > 1:
+                                        raise except_orm("Thông báo", (
+                                            "Đang có nhiều định mức cho dịch vụ này. Vui lòng liên hệ Admintrantor để kiểm tra"))
+                                    for tmp in service_bom_obj.bom_line_ids:
+                                        using_stock_move_obj = self.env['izi.using.stock.move.line'].search(
+                                            [('use_material_id', '=', use_material_surgery_id.id),
+                                             ('material_id', '=', tmp.product_id.id)])
+                                        if using_stock_move_obj:
+                                            using_stock_move_obj.quantity += tmp.product_qty * line.quantity
+                                        else:
+                                            if tmp.product_id.product_tmpl_id.uom_id.id != tmp.product_uom_id.id:
+                                                raise except_orm("Cảnh báo!", (
+                                                    "Cấu hình đơn vị của nguyên vật liệu xuất khác với đơn vị tồn kho. Vui lòng kiểm tra lại"))
+                                            argvs = {
+                                                'material_id': tmp.product_id.id,
+                                                'quantity': tmp.product_qty * line.quantity,
+                                                'uom_id': tmp.product_uom_id.id,
+                                                'use_material_id': use_material_surgery_id.id,
+                                                'use': True
+                                            }
+                                            using_stock_move.create(argvs)
+                            use_material_surgery_id.update({'employee_ids': [(4, x) for x in employess_ids],
+                                                            'service_ids': [(4, x) for x in service_ids],
+                                                            'quantity': count_quantity})
+
+                            if self.pos_session_id.config_id.x_auto_export_import_materials:
+                                use_material_surgery_id.action_set_default_value()
+                                use_material_surgery_id.force_available()
+                                use_material_surgery_id.action_done()
+                        if count_service > 0:
+                            count_quantity = 0
+                            argvss = {
+                                'using_service_id': self.id,
+                                'date': self.redeem_date,
+                                'origin': self.name,
+                                'customer_id': self.customer_id.id,
+                                'picking_type_id': picking_type_id,
+                                'type_service': 'spa',
+                            }
+                            use_material_surgery_id = use_material_obj.create(argvss)
+                            for line in self.service_card_ids:
+                                if line.service_id.product_tmpl_id.x_type_service == 'spa' and line.service_id.product_tmpl_id.categ_id.x_category_code in list and line.service_id.bom_service_count > 0:
+                                    count_quantity += line.quantity
+                                    for x in line.employee_ids:
+                                        employess_ids.append(x.id)
+                                    for y in line.doctor_ids:
+                                        employess_ids.append(y.id)
+                                    service_ids.append(line.service_id.id)
+                                    service_bom_obj = self.env['service.bom'].search(
+                                        [('product_tmpl_id', '=', line.service_id.product_tmpl_id.id),
+                                         ('product_id', '=', line.service_id.id)])
+                                    if len(service_bom_obj) > 1:
+                                        raise except_orm("Thông báo", (
+                                            "Đang có nhiều định mức cho dịch vụ này. Vui lòng liên hệ Admintrantor để kiểm tra"))
+                                    for tmp in service_bom_obj.bom_line_ids:
+                                        using_stock_move_obj = self.env['izi.using.stock.move.line'].search(
+                                            [('use_material_id', '=', use_material_surgery_id.id),
+                                             ('material_id', '=', tmp.product_id.id)])
+                                        if using_stock_move_obj:
+                                            using_stock_move_obj.quantity += tmp.product_qty * line.quantity
+                                        else:
+                                            if tmp.product_id.product_tmpl_id.uom_id.id != tmp.product_uom_id.id:
+                                                raise except_orm("Cảnh báo!", (
+                                                    "Cấu hình đơn vị của nguyên vật liệu xuất khác với đơn vị tồn kho. Vui lòng kiểm tra lại"))
+                                            argvs = {
+                                                'material_id': tmp.product_id.id,
+                                                'quantity': tmp.product_qty * line.quantity,
+                                                'uom_id': tmp.product_uom_id.id,
+                                                'use_material_id': use_material_surgery_id.id,
+                                                'use': True
+                                            }
+                                            using_stock_move.create(argvs)
+                            use_material_surgery_id.update({'employee_ids': [(4, x) for x in employess_ids],
+                                                            'service_ids': [(4, x) for x in service_ids],
+                                                            'quantity': count_quantity})
+
+                            if self.pos_session_id.config_id.x_auto_export_import_materials:
+                                use_material_surgery_id.action_set_default_value()
+                                use_material_surgery_id.force_available()
+                                use_material_surgery_id.action_done()
+                        if count_service_pttm == 0 and count_service == 0:
+                            self.state = 'working'
+                            self.date_start = datetime.now()
+
+
+class IziServiceCardUsingLine(models.Model):
+    _inherit = 'izi.service.card.using.line'
+
+    body_area_ids = fields.Many2many('body.area', string='Body Area')
+    therapy_prescription_id = fields.Many2one('therapy.prescription', string='Therapy Prescription')
+    therapy_record_id = fields.Many2one('therapy.record', related='therapy_prescription_id.therapy_record_id', string='Therapy Record', store=True)
+    x_is_massage = fields.Boolean(string='Is Massage', related='service_id.x_is_massage', store=True)
+    x_is_injection = fields.Boolean(string='Is Injection', related='service_id.x_is_injection', store=True)

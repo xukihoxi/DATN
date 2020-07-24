@@ -1,0 +1,55 @@
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="crm_shop_bed_list">
+            <field name="name">crm shop bed list</field>
+            <field name="model">crm.shop.bed</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="config_id"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="crm_shop_bed_form">
+            <field name="name">crm shop bed form</field>
+            <field name="model">crm.shop.bed</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                                <field name="config_id" options="{'no_create':1, 'no_create_edit':1}" required="1"/>
+                            </group>
+                            <group>
+                                <field name="description"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="crm_shop_bed_action_window">
+            <field name="name">Shop Bed</field>
+            <field name="res_model">crm.shop.bed</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+        </record>
+
+        <menuitem id="crm_menu_booking"
+            name="Booking"
+            parent="crm.crm_menu_root"
+            sequence="21"
+            groups="sales_team.group_sale_manager"/>
+
+
+        <menuitem name="Shop Bed" id="crm_shop_bed" parent="crm_booking.crm_menu_booking"
+                  action="crm_booking.crm_shop_bed_action_window"/>
+
+    </data>
+</odoo>

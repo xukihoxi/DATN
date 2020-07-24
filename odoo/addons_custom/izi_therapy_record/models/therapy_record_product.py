@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models, SUPERUSER_ID, _
+from datetime import date, datetime
+from odoo.exceptions import UserError, ValidationError, MissingError
+
+
+class TherapyRecordProduct(models.Model):
+    _name = 'therapy.record.product'
+
+    name = fields.Char('Therapy record product')
+    therapy_record_id = fields.Many2one('therapy.record', string='Therapy Record')
+    product_id = fields.Many2one('product.product', string='Product')
+    uom_id = fields.Many2one('product.uom', related='product_id.uom_id', string='Unit of Measure', readonly=True)
+    qty_used = fields.Integer(string='Quantity Used')
+    qty_available = fields.Integer(string='Quantity available', compute='_compute_qty_available')
+    qty_max = fields.Integer(string='Quantity Max')
+    note = fields.Char(string='Note')
+
+    @api.depends('qty_used', 'qty_max')
+    def _compute_qty_available(self):
+        for s in self:
+            if s.product_id.x_is_injection:
+                s.qty_available = -1
+            else:
+                s.qty_available = s.qty_max - s.qty_used

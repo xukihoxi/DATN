@@ -1,0 +1,73 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models, SUPERUSER_ID, _
+from datetime import date, datetime, timedelta
+from odoo.exceptions import UserError, ValidationError, MissingError
+import logging
+import json
+
+_logger = logging.getLogger(__name__)
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+
+    def _action_done(self):
+        res = super(StockPicking, self)._action_done()
+        picking = self.env['stock.picking'].search([('backorder_id', '=', self.id)])
+        if res and res.x_therapy_record_id:
+            res.update({
+                'x_medicine_day_ok': False,
+            })
+        return res
+
+
+    @api.multi
+    def action_done(self):
+        res = super(StockPicking, self).action_done()
+        if self.x_therapy_record_id and self.x_medicine_day_ok:
+            #todo cập nhật ngày hết thuốc trên HSTL
+            #tinh số ngày thuốc được dùng trong PCĐ
+            for therapy_prescription_line_remain_id in self.x_therapy_prescription_id.therapy_prescription_line_remain_ids:
+                if therapy_prescription_line_remain_id.product_id.x_is_medicine_day:
+                    qty = therapy_prescription_line_remain_id.qty
+            if self.x_therapy_record_id.out_of_medicine_date:
+                out_of_date = datetime.strptime(self.x_therapy_record_id.out_of_medicine_date, '%Y-%m-%d') + timedelta(days=qty)
+            else:
+                out_of_date = datetime.now() + timedelta(days=qty)
+            #cap nhat ngày hết thuốc trên hstl
+            self.x_therapy_record_id.out_of_medicine_date = out_of_date
+            #todo tạo lịch nhắc thuốc sau khi xuất đơn kho
+            arr = self.env['ir.config_parameter'].sudo().get_param('Remind.Medicine')
+            arr_config = json.loads(arr.replace("'", "\""))
+            reminds_created = self.env['activity.history'].search(
+                [('therapy_record_id', '=', self.x_therapy_record_id.id), ('state', '!=', 'interacted'),
+                 ('type', '=', 'out_of_medicine')], limit=1)
+            date_deadline = out_of_date - timedelta(days=arr_config['date_deadline'])
+            if not reminds_created:
+                remind = self.env['activity.history'].create({
+                    'partner_id': self.partner_id.id,
+                    'therapy_record_id': self.x_therapy_record_id.id,
+                    'mail_activity_type_id': arr_config['activity_type_id'],
+                    'type': 'out_of_medicine',
+                    'object': 'consultant',
+                    'user_id': self.partner_id.user_id.id,
+                    'date_deadline': date_deadline,
+                })
+                remind.action_assign()
+            else:
+                reminds_created.date_deadline = date_deadline
+        return res
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    def _action_done(self):
+        res = super(StockMove, self)._action_done()
+        for move in self:
+            pickings = move.env['stock.picking'].search([('backorder_id', '=', move.picking_id.id)])
+            for picking in pickings:
+                if picking and picking.x_medicine_day_ok:
+                    picking.update({
+                        'x_medicine_day_ok': False,
+                    })
+        return res

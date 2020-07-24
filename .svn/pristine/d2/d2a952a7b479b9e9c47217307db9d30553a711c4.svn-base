@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="view_izi_use_service_card_inherit" model="ir.ui.view">
+            <field name="name">therapy_service_using</field>
+            <field name="model">izi.service.card.using</field>
+            <field name="inherit_id" ref="izi_use_service_card.use_service_card_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_confirm_service']" position="after">
+                    <button name="action_confirm_bundle" type="object" class="oe_highlight" string="Confirm"
+                            attrs="{'invisible': ['|',('type', '!=', 'bundle'), ('state', '!=', 'draft')]}"/>
+                </xpath>
+                <xpath expr="//button[@name='action_send_price']" position="replace">
+                    <button name="action_send_price" type="object" string="Send" attrs="{'invisible': ['|',('type', 'in', ['card', 'bundle']), ('state', '!=', 'draft')]}" class="oe_highlight"/>
+                </xpath>
+                <xpath expr="//field[@name='pricelist_id']" position="after">
+                    <field name="therapy_prescription_id"
+                           attrs="{'invisible':[('type','!=', 'bundle')], 'readonly': [('state', '!=', 'draft')]}"/>
+                </xpath>
+                <xpath expr="//page[1]" position="after">
+                    <page string="Service Bundle" attrs="{'invisible': [('type', '=', 'bundle')]}">
+                        <field name="service_bundle_ids" attrs="{'readonly': [('customer_id', '=', False), ('state', 'in', ('done', 'cancel'))]}">
+                            <tree editable="bottom">
+                                <field name="edit_price" invisible="1"/>
+                                <field name="service_id" options="{'no_create':1, 'no_create_edit':1}"
+                                       domain="[('product_tmpl_id.type', '=', 'service')]" attrs="{'readonly': [('parent.state', '!=', 'draft')]}"/>
+                                <field name="quantity" attrs="{'readonly': [('parent.state', '!=', 'draft')]}"/>
+                                <field name="price_unit" required="1" attrs="{'readonly': [('edit_price', '=', False)]}" force_save="1"/>
+                                <field name="discount" attrs="{'readonly': [('parent.state', '!=', 'draft')]}"/>
+                                <field name="amount" readonly="1" force_save="1"/>
+                                <field name="bed_ids" options="{'no_create':1, 'no_create_edit':1}"
+                                       widget="many2many_tags"
+                                       attrs="{'required': 0, 'readonly': ['|',('parent.state', '!=', 'draft'), ('quantity','=',0)]}"/>
+                                <field name="employee_ids" options="{'no_create':1, 'no_create_edit':1}"
+                                       attrs="{'readonly': [('parent.state', '!=', 'draft')]}" widget="many2many_tags" required="0"/>
+                                <field name="doctor_ids" domain="[('job_id.x_code', '=', 'BS')]" options="{'no_create':1, 'no_create_edit':1}"
+                                       attrs="{'readonly': [('parent.state', '!=', 'draft')]}" widget="many2many_tags" />
+                                <field name="work_type" required="1" attrs="{'readonly': [('parent.state', '!=', 'draft')]}" invisible="1"/>
+                                <field name="customer_rate" widget="sentiment_icon" attrs="{'invisible': [('parent.state', 'not in', ('rate', 'done'))]}" readonly="1" force_save="1"/>
+                                <field name="customer_comment" attrs="{'invisible': [('parent.state', 'not in', ('rate', 'done'))]}" readonly="1" force_save="1"/>
+                                <field name="show_button" invisible="1"/>
+                                <field name="note" attrs="{'readonly': [('parent.state', 'in', ('done', 'cancel'))]}"/>
+                                <field name="state" invisible="1"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <group>
+                                        <field name="service_id" options="{'no_create':1, 'no_create_edit':1}"/>
+                                        <field name="quantity"/>
+                                        <field name="price_unit"/>
+                                    </group>
+                                    <group>
+                                        <field name="discount"/>
+                                        <field name="amount"/>
+                                        <field name="employee_ids" options="{'no_create':1, 'no_create_edit':1}"
+                                               required="1" widget="many2many_tags"/>
+                                    </group>
+                                    <label for="note"/>
+                                    <field name="note"/>
+                                </group>
+                            </form>
+                        </field>
+                        <group class="oe_subtotal_footer oe_right" colspan="2" name="order_total">
+                            <div class="oe_subtotal_footer_separator oe_inline">
+                                <label for="amount_total"/>
+                            </div>
+                            <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator"
+                                   widget="monetary"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

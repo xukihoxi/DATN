@@ -1,0 +1,376 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models, SUPERUSER_ID, _
+from datetime import date, datetime
+from odoo.exceptions import UserError, ValidationError, MissingError
+
+
+class TherapyPrescription(models.Model):
+    _name = 'therapy.prescription'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'resource.mixin']
+
+    name = fields.Char(string='Therapy prescription')
+    partner_id = fields.Many2one('res.partner', string='Partner', track_visibility='onchange')
+    user_id = fields.Many2one('res.users', string='Prescriber', track_visibility='onchange')
+    create_date = fields.Datetime(string='Create Date', default=fields.Datetime.now)
+    time_prescription = fields.Datetime(string='Prescription Time', default=fields.Datetime.now)
+    note = fields.Text(string='Note')
+    state = fields.Selection([('draft', 'Draft'), ('waiting', 'Waiting'), ('confirm', 'Confirm')], default='draft',
+                             string='State')
+    therapy_prescription_line_warranty_ids = fields.One2many('therapy.prescription.line', 'therapy_prescription_id',
+                                                             string='Therapy prescription line',
+                                                             domain=lambda self: [('type', '=', 'warranty')])
+    therapy_prescription_line_remain_ids = fields.One2many('therapy.prescription.line', 'therapy_prescription_id',
+                                                           string='Therapy prescription line',
+                                                           domain=lambda self: [('type', '=', 'remain')])
+    therapy_prescription_line_medicine_ids = fields.One2many('therapy.prescription.line', 'therapy_prescription_id',
+                                                             string='Therapy prescription line',
+                                                             domain=lambda self: [('type', '=', 'medicine')])
+    therapy_record_id = fields.Many2one('therapy.record', 'Therapy Record')
+    izi_service_card_using_ids = fields.One2many('izi.service.card.using', 'therapy_prescription_id',
+                                                 string='Using service card')
+    stock_picking_ids = fields.One2many('stock.picking', 'therapy_prescription_id', string='Stock Picking')
+
+    @api.model
+    def default_get(self, fields):
+        res = super(TherapyPrescription, self).default_get(fields)
+        res['user_id'] = self._context.get('uid')
+        return res
+
+    @api.multi
+    def action_get_product_remain(self):
+        for prescription in self:
+            if not prescription.therapy_record_id.therapy_record_product_ids: raise UserError("Hồ sơ trị liệu %s chưa có sản phẩm/ dịch vụ tồn!")
+            arr_therapy_prescription_line_remain = []
+            for therapy_record_product in prescription.therapy_record_id.therapy_record_product_ids:
+                qty_available = therapy_record_product.qty_available
+                if therapy_record_product.qty_max != -1:
+                    if therapy_record_product.product_id.type == 'product':
+                        moves = self.env['stock.move'].search([('x_therapy_record_id', '=', prescription.therapy_record_id.id), ('product_id', '=', therapy_record_product.product_id.id), ('picking_id.state', 'not in', ['done', 'cancel'])])
+                        if moves:
+                            for move in moves:
+                                qty_available -= move.product_uom_qty
+                    if therapy_record_product.product_id.type == 'service':
+                        using_lines = self.env['izi.service.card.using.line'].search([('therapy_record_id', '=', prescription.therapy_record_id.id), ('service_id', '=', therapy_record_product.product_id.id), ('using_id.state', 'not in', ['done', 'cancel'])])
+                        if using_lines:
+                            for using_line in using_lines:
+                                qty_available -= using_line.quantity
+                arr_therapy_prescription_line_remain.append((0, 0, {
+                    'product_id': therapy_record_product.product_id.id,
+                    'qty': 0,
+                    'qty_available': qty_available,
+                    'uom_id': therapy_record_product.uom_id.id,
+                    'note': '',
+                    'type': 'remain',
+                }))
+            prescription.therapy_prescription_line_remain_ids = False
+            prescription.therapy_prescription_line_remain_ids = arr_therapy_prescription_line_remain
+
+       # '''
+       # for prescription in self:
+       #      if not prescription.therapy_record_id: raise UserError("Phiếu chỉ định chưa gắn với hồ sơ nào!")
+       #      prescription.therapy_prescription_line_remain_ids = False
+       #      arr_therapy_prescription_line_remain = []
+       #      arr_therapy_products_onhand = []
+       #      check = True
+       #      therapy_id = prescription.therapy_record_id
+       #      # todo lấy SL xí phần
+       #      # todo lấy SL xí phần của thẻ sddv
+       #      using_service_card_not_done_ids = self.env['izi.service.card.using'].search(
+       #          [('therapy_record_id', '=', therapy_id.id),
+       #           ('state', '!=', 'done')])
+       #      if using_service_card_not_done_ids:
+       #          for using_service_card_not_done_id in using_service_card_not_done_ids:
+       #              for service_card_id in using_service_card_not_done_id.service_card_ids:
+       #                  arr_therapy_products_onhand.append({
+       #                      'product_id': service_card_id.service_id.id,
+       #                      'qty': service_card_id.quantity,
+       #                  })
+       #      # todo lấy SL xí phần của thẻ sản phẩm
+       #      stock_picking_not_done_ids = self.env['stock.picking'].search(
+       #          [('therapy_record_id', '=', therapy_id.id),
+       #           ('state', '!=', 'done')])
+       #      if stock_picking_not_done_ids:
+       #          for stock_picking_not_done_id in stock_picking_not_done_ids:
+       #              for move_line in stock_picking_not_done_id.move_lines:
+       #                  arr_therapy_products_onhand.append({
+       #                      'product_id': move_line.product_id.id,
+       #                      'qty': move_line.product_uom_qty,
+       #                  })
+       #      # todo tính toán số lượng available
+       #      products_therapy = self.env['therapy.record.product'].search(
+       #          [('therapy_record_id', '=', therapy_id.id)])
+       #      if not products_therapy: raise UserError("Không tìm thấy hồ sơ trị liệu có id %s" % (str(therapy_id.id)))
+       #      for product_therapy in products_therapy:
+       #
+       #          quantity_product = product_therapy.qty_available
+       #          for arr_therapy_product_onhand in arr_therapy_products_onhand:
+       #              if product_therapy.qty_available > 0:
+       #                  if product_therapy.product_id.id == arr_therapy_product_onhand['product_id']:
+       #                      # check = False
+       #                      quantity_product = quantity_product - arr_therapy_product_onhand['qty']
+       #          if quantity_product < 0: quantity_product = 0
+       #
+       #          if not check:
+       #              arr_therapy_prescription_line_remain.append((0, 0, {
+       #                  'product_id': product_therapy.product_id.id,
+       #                  'qty': 0,
+       #                  'qty_available': quantity_product,
+       #                  'uom_id': product_therapy.uom_id.id,
+       #                  'note': '',
+       #                  'type': 'remain'
+       #              }))
+       #          else:
+       #              arr_therapy_prescription_line_remain.append((0, 0, {
+       #                  'product_id': product_therapy.product_id.id,
+       #                  'qty': 0,
+       #                  'qty_available': product_therapy.qty_available,
+       #                  'uom_id': product_therapy.uom_id.id,
+       #                  'note': '',
+       #                  'type': 'remain'
+       #              }))
+       #      # thêm SL vào phiếu chỉ định
+       #      if arr_therapy_prescription_line_remain:
+       #          prescription.therapy_prescription_line_remain_ids = arr_therapy_prescription_line_remain
+       #      else:
+       #          prescription.therapy_prescription_line_remain_ids = False
+       #  '''
+
+    def get_product_remain(self):
+        check = False
+        arr_product_remain = []
+        for therapy_prescription_line_remain_id in self.therapy_prescription_line_remain_ids:
+            if therapy_prescription_line_remain_id.qty != 0 and therapy_prescription_line_remain_id.product_id.product_tmpl_id.type == 'product':
+                arr_product_remain.append({
+                    'product_id': therapy_prescription_line_remain_id.product_id.id,
+                    'qty': therapy_prescription_line_remain_id.qty,
+                    'uom': therapy_prescription_line_remain_id.uom_id.id,
+                })
+                if therapy_prescription_line_remain_id.qty > therapy_prescription_line_remain_id.qty_available:
+                    check = True
+        return [arr_product_remain, check]
+
+    def get_product_medicine(self):
+        arr_product_medicine = []
+        if self.therapy_prescription_line_medicine_ids:
+            for therapy_prescription_line_medicine_id in self.therapy_prescription_line_medicine_ids:
+                if therapy_prescription_line_medicine_id.qty != 0:
+                    arr_product_medicine.append({
+                        'product_id': therapy_prescription_line_medicine_id.product_id.id,
+                        'qty': therapy_prescription_line_medicine_id.qty,
+                        'uom': therapy_prescription_line_medicine_id.uom_id.id,
+                    })
+        return arr_product_medicine
+
+    def get_service_remain(self):
+        check = False
+        arr_service_remain = []
+        for therapy_prescription_line_remain_id in self.therapy_prescription_line_remain_ids:
+            if therapy_prescription_line_remain_id.qty != 0 and therapy_prescription_line_remain_id.product_id.product_tmpl_id.type == 'service':
+                arr_service_remain.append({
+                    'product_id': therapy_prescription_line_remain_id.product_id.id,
+                    'qty': therapy_prescription_line_remain_id.qty,
+                    'uom': therapy_prescription_line_remain_id.uom_id.id,
+                    'body_area_ids': [(6, 0, therapy_prescription_line_remain_id.body_area_ids.ids)],
+                })
+                if therapy_prescription_line_remain_id.qty_available != -1 and therapy_prescription_line_remain_id.qty > therapy_prescription_line_remain_id.qty_available:
+                    check = True
+        return [arr_service_remain, check]
+
+    def get_service_warranty(self):
+        arr_product_warranty = []
+        if self.therapy_prescription_line_warranty_ids:
+            for therapy_prescription_line_warranty_id in self.therapy_prescription_line_warranty_ids:
+                if therapy_prescription_line_warranty_id.qty != 0:
+                    arr_product_warranty.append({
+                        'product_id': therapy_prescription_line_warranty_id.product_id.id,
+                        'qty': therapy_prescription_line_warranty_id.qty,
+                        'uom': therapy_prescription_line_warranty_id.uom_id.id,
+                    })
+        return arr_product_warranty
+
+    def create_stock_picking(self, arr_product_remain):
+        arr_product_stocks = []
+        arr_product_stocks = self.get_product_medicine() + arr_product_remain
+        Picking = self.env['stock.picking']
+        Move = self.env['stock.move']
+        StockWarehouseObj = self.env['stock.warehouse']
+        picking_type_id = self.env.user.x_pos_config_id.picking_type_id
+        if not picking_type_id:
+            raise UserError(_('Chưa cấu hình loại điều chuyển kho cho điểm bán hàng của bạn!'))
+
+        if self.partner_id:
+            destination_id = self.partner_id.property_stock_customer.id
+        else:
+            if (not picking_type_id) or (not picking_type_id.default_location_dest_id):
+                customerloc, supplierloc = StockWarehouseObj._get_partner_locations()
+                destination_id = customerloc.id
+            else:
+                destination_id = picking_type_id.default_location_dest_id.id
+
+        if picking_type_id:
+            picking_vals = {
+                'origin': self.name,
+                'partner_id': self.partner_id.id,
+                'scheduled_date': fields.Datetime.now(),
+                'picking_type_id': picking_type_id.id,
+                'move_type': 'direct',
+                'location_id': picking_type_id.default_location_src_id.id,
+                'location_dest_id': destination_id,
+                'therapy_prescription_id': self.id,
+                'state': 'waiting',
+            }
+            picking_id = Picking.create(picking_vals)
+            for arr_product_stock in arr_product_stocks:
+                Move.create({
+                    'name': self.name,
+                    'product_uom': arr_product_stock['uom'],
+                    'picking_id': picking_id.id,
+                    'picking_type_id': picking_type_id.id,
+                    'product_id': arr_product_stock['product_id'],
+                    'product_uom_qty': arr_product_stock['qty'],
+                    'state': 'waiting',
+                    'location_id': picking_type_id.default_location_src_id.id,
+                    'location_dest_id': destination_id,
+                })
+
+    def create_use_service(self, arr_service_remain):
+        use_service_card = self.env['izi.service.card.using']
+        use_service_card_line = self.env['izi.service.card.using.line']
+        arr_warranty_products = self.get_service_warranty()
+        session = self.env['pos.session'].search(
+            [('state', '=', 'opened'), ('config_id', '=', self.user_id.x_pos_config_id.id)],
+            limit=1)
+        if arr_service_remain:
+            use_service_card_id = use_service_card.create({
+                'type': 'bundle',
+                'customer_id': self.partner_id.id,
+                'redeem_date': fields.Datetime.now(),
+                'state': 'draft',
+                'user_id': self.user_id.id,
+                'pos_session_id': session.id,
+                'therapy_prescription_id': self.id,
+                'pricelist_id': self.partner_id.property_product_pricelist.id,
+
+            })
+            for service in arr_service_remain:
+                use_service_card_line_id = use_service_card_line.create({
+                    'service_id': service['product_id'],
+                    'quantity': service['qty'],
+                    'using_id': use_service_card_id.id,
+                    'body_area_ids': service['body_area_ids'],
+                })
+        if arr_warranty_products:
+            use_service_card_id = use_service_card.create({
+                'type': 'guarantee',
+                'customer_id': self.partner_id.id,
+                'redeem_date': fields.Datetime.now(),
+                'state': 'draft',
+                'user_id': self.user_id.id,
+                'pos_session_id': session.id,
+                'therapy_prescription_id': self.id,
+                'pricelist_id': self.partner_id.property_product_pricelist.id,
+            })
+            for product in arr_warranty_products:
+                use_service_card_line_id = use_service_card_line.create({
+                    'service_id': product['product_id'],
+                    'quantity': product['qty'],
+                    'using_id': use_service_card_id.id,
+                })
+
+    @api.multi
+    def action_confirm(self):
+        for prescription in self:
+            if not prescription.therapy_prescription_line_remain_ids and not prescription.therapy_prescription_line_warranty_ids and not prescription.therapy_prescription_line_medicine_ids:
+                raise UserError(_('Chưa lựa chọn Sản phẩm/Dịch vụ sử dụng'))
+            arr_product_remain, check_product_stock = prescription.get_product_remain()
+            arr_service_remain, check_use_service = prescription.get_service_remain()
+            if not arr_product_remain and not arr_service_remain and not prescription.therapy_prescription_line_warranty_ids and not prescription.therapy_prescription_line_medicine_ids:
+                raise UserError(_('Chưa lựa chọn Sản phẩm/Dịch vụ sử dụng'))
+            if check_product_stock or check_use_service:
+                prescription.state = 'waiting'
+                pass
+            else:
+                prescription.state = 'confirm'
+                prescription.action_done()
+
+    def action_done(self):
+        arr_product_remain = self.get_product_remain()[0]
+        arr_service_remain = self.get_service_remain()[0]
+        self.create_stock_picking(arr_product_remain)
+        self.create_use_service(arr_service_remain)
+        self.state = 'confirm'
+
+    def action_cancel(self):
+        for therapy_prescription_line_remain_id in self.therapy_prescription_line_remain_ids:
+            therapy_prescription_line_remain_id.qty = 0
+        self.state = 'draft'
+        raise (_('Dừng yêu cầu tạo các đơn xuất kho và sử dụng dịch vụ'))
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            array_date = vals['create_date'].split(' ')[0].split('-')
+            create_date = str(array_date[2]) + str(array_date[1]) + str(array_date[0])
+            partner_id = self.env['res.partner'].search([('id', '=', vals['partner_id'])])
+            vals['name'] = 'PCD_%s_%s' % (str(partner_id.x_code), str(create_date))
+        return super(TherapyPrescription, self).create(vals)
+
+    @api.multi
+    def write(self, vals):
+        if vals.get('partner_id'):
+            array_date = self.create_date.split(' ')[0].split('-')
+            create_date = str(array_date[2]) + str(array_date[1]) + str(array_date[0])
+            partner_id = self.env['res.partner'].search([('id', '=', vals['partner_id'])])
+            vals['name'] = 'PCD_%s_%s' % (str(partner_id.x_code), str(create_date))
+        return super(TherapyPrescription, self).write(vals)
+
+
+class PrescriptionTaskLine(models.Model):  # Phiếu chỉ định Line
+    _name = 'therapy.prescription.line'
+
+    name = fields.Char('Therapy prescription line')
+    therapy_prescription_id = fields.Many2one('therapy.prescription', 'Therapy prescription')
+    type = fields.Selection(
+        [('warranty', 'Warranty'), ('remain', 'Remain'), ('medicine', 'Medicine')], string='Type')
+    product_id = fields.Many2one('product.product', 'Product')
+    uom_id = fields.Many2one('product.uom', string='Unit of  Measure')
+    qty = fields.Integer(string='Quantity')  # Số lượng
+    qty_available = fields.Integer(string='Quantity available')  # SỐ lượng khả dụng
+    qty_reserved = fields.Integer(string='Quantity Reserved')
+    qty_therapy = fields.Integer(string='Quantity Therapy')
+    price_unit = fields.Float(string='Price unit', default=0)
+    amount = fields.Float(string='Amount', default=0)
+    note = fields.Char(string='Note')
+    body_area_ids = fields.Many2many('body.area', string='Body Area')
+    product_is_massage = fields.Boolean(related='product_id.x_is_massage', string='Product Is Massage', readonly=1, store=True)
+
+
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.product_id:
+            self.uom_id = self.product_id.product_tmpl_id.uom_id.id
+            price = self.product_id.product_tmpl_id.list_price
+            partner_id = self.therapy_prescription_id.partner_id
+            tax_ids = self.product_id.taxes_id.filtered(
+                lambda r: not partner_id.company_id or r.company_id == partner_id.company_id)
+            fpos = partner_id.property_account_position_id
+            tax_ids_after_fiscal_position = fpos.map_tax(tax_ids, self.product_id, partner_id) if fpos else tax_ids
+            fpos = partner_id.property_account_position_id
+            self.price_unit = self.env['account.tax']._fix_tax_included_price_company(price, self.product_id.taxes_id,
+                                                                                      tax_ids_after_fiscal_position,
+                                                                                      partner_id.company_id)
+
+    @api.onchange('qty')
+    def _onchange_qty(self):
+        if self.qty and self.product_id:
+            self.amount = self.price_unit * self.qty
+
+    @api.onchange('qty_available')
+    def _onchange_qty_actual(self):
+        if self.qty_available and self.product_id:
+            self.amount = self.qty_available * self.price_unit
+
+
+
+

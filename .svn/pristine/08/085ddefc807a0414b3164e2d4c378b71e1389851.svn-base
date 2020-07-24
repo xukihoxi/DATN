@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="service_booking_list">
+            <field name="name">service booking list</field>
+            <field name="model">service.booking</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="config_id"/>
+                    <field name="partner_id"/>
+                    <field name="time_from"/>
+                    <field name="time_to"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="service_booking_form">
+            <field name="name">service booking form</field>
+            <field name="model">service.booking</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done,cancel"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="name" class="oe_inline" readonly="1"/>
+                                </h1>
+                            </div>
+                        </group>
+                        <label for="partner_id" class="oe_edit_only" string="Customer"/>
+                        <h2>
+                            <field name="partner_id" options="{'no_create': 1, 'no_create_edit': 1, 'no_open': True}"/>
+                        </h2>
+                        <group>
+                            <group>
+                                <field name="config_id" options="{'no_create': 1, 'no_create_edit': 1, 'no_open': True}" required="1"/>
+                                <field name="time_from" required="1"/>
+                                <field name="time_to" required="1"/>
+                            </group>
+                            <group>
+                                <field name="shop_bed_id" options="{'no_create': 1, 'no_create_edit': 1, 'no_open': True}"/>
+                                <field name="note"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="service_ids"/>
+                            <field name="employee_ids"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+         <record id="view_service_booking_gantt" model="ir.ui.view">
+            <field name="name">service.booking.gantt</field>
+            <field name="model">service.booking</field>
+            <field name="arch" type="xml">
+                <gantt date_stop="time_to" date_start="time_from"  string="Booking" default_group_by="shop_bed_id">
+                </gantt>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="service_booking_action_window">
+            <field name="name">Service Booking</field>
+            <field name="res_model">service.booking</field>
+            <field name="view_mode">gantt,tree,form</field>
+            <field name="view_type">form</field>
+        </record>
+
+
+        <menuitem name="Service Booking" id="service_booking_menu" parent="crm_booking.crm_menu_booking"
+                  action="crm_booking.service_booking_action_window"/>
+    </data>
+</odoo>

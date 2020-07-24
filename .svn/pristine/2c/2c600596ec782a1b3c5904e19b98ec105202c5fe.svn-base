@@ -1,0 +1,37 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models, SUPERUSER_ID, _
+from datetime import date, datetime
+from odoo.exceptions import UserError, ValidationError, MissingError
+
+
+class TherapyPrescriptionReturnProduct(models.Model):
+    _name = 'therapy.prescription.return.product'
+    _description = u'Therapy Prescription Return Product'
+
+    therapy_prescription_id = fields.Many2one('therapy.prescription', string='Therapy Prescription')
+    therapy_record_id = fields.Many2one('therapy.record', string='Therapy Record')
+    date_return = fields.Date(string='Date return',default=fields.Date.today())
+    user_id = fields.Many2one('res.users', string='User')
+    state = fields.Selection([('new', 'New'), ('done', 'Done')], default='new')
+    therapy_prescription_return_product_line_ids = fields.One2many('therapy.prescription.return.product.line',
+                                                                   'therapy_prescription_return_product_id',
+                                                                   string='Therapy Prescription Return Product Line')
+
+    @api.multi
+    def action_confirm(self):
+        for detail in self.therapy_prescription_id:
+            if detail.state != 'confirm':
+                raise except_orm('Cảnh báo!', ("Phiếu chỉ định đã chuyển trạng thái, vui lòng tải lại trang để cập nhật!"))
+            detail.state = 'transfer_confirmation'
+
+class TherapyPrescriptionReturnProductLine(models.Model):
+    _name = 'therapy.prescription.return.product.line'
+
+    product_id = fields.Many2one('product.product', string='Product')
+    qty = fields.Float(string='Quantity')
+    date_return = fields.Date(string='Date return')
+    user_id = fields.Many2one('res.users', string='User')
+    therapy_prescription_id = fields.Many2one('therapy.prescription', related='therapy_prescription_return_product_id.therapy_prescription_id', string='Therapy Prescription')
+    therapy_record_id = fields.Many2one('therapy.record', related='therapy_prescription_return_product_id.therapy_record_id',string='Therapy Record')
+    therapy_prescription_return_product_id = fields.Many2one('therapy.prescription.return.product',
+                                                             string='Therapy Prescription Return Product')

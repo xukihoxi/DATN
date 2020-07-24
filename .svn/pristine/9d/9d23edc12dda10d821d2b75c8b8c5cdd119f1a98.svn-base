@@ -1,0 +1,72 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models, SUPERUSER_ID, _
+from datetime import date
+from odoo.exceptions import UserError, ValidationError, MissingError
+
+
+class PosOrder(models.Model):
+    _inherit = 'pos.order'
+
+    x_therapy_record_id = fields.Many2one('therapy.record', string='Therapy Record')
+    x_categ_id = fields.Many2one('product.category', related='x_therapy_record_id.categ_id', string='Category')
+    x_number_massage = fields.Integer(string='Number Massage', default=0)
+    x_pos_order_complement_ids = fields.One2many('pos.order.complement', 'pos_order_id', string='Pos Order Complement')
+    x_name_bundle = fields.Many2one('bundle.therapy.barem', string='Bundle')
+
+    @api.multi
+    def action_compute_barem(self):
+        for order in self:
+            lines = order.lines
+            id = lines[0].product_id.id
+            for line in lines:
+                if line.product_id.id == id:
+                    continue
+                else:
+                    raise UserError(_("Chỉ bán bán một loại sản phẩm trong đơn bán gói liệu trình!"))
+            barem = order.env['bundle.therapy.barem'].search([('value_bundle_min', '<=', order.amount_total),
+                                                              ('value_bundle_max', '>=', order.amount_total),
+                                                              ('product_id', '=', id)], limit=1)
+            arr_pos_order_complement =[]
+            if not barem:
+                raise UserError("Không tìm thấy barem phù hợp với giá trị đơn hàng. Vui lòng kiểm tra lại!")
+            order.x_name_bundle = barem.id
+            for bundle_therapy_barem_line_id in barem.bundle_therapy_barem_line_ids:
+                arr_pos_order_complement.append((0, 0, {
+                    'product_id': bundle_therapy_barem_line_id.product_id.id,
+                    'qty': bundle_therapy_barem_line_id.qty,
+                    'qty_actual': 0,
+                    'uom_id': bundle_therapy_barem_line_id.uom_id.id,
+                }))
+
+            order.write({ 'x_pos_order_complement_ids': arr_pos_order_complement})
+
+
+class PosOrderLine(models.Model):
+    _inherit = 'pos.order.line'
+
+    x_body_area_id = fields.Many2one('body.area', string='Body Area')
+
+
+class PosOrderComplement(models.Model):
+    _name = 'pos.order.complement'
+
+    name = fields.Char(string='Pos Order Complement')
+    product_id = fields.Many2one('product.product', string='Product')
+    uom_id = fields.Many2one('product.uom', string='Unit of  Measure', required=True)
+    qty = fields.Integer(string='Qty')
+    qty_actual = fields.Integer(string='Qty Actual')
+    note = fields.Char(string='Note')
+    pos_order_id = fields.Many2one('pos.order', string='Pos Order')
+
+
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    @api.model
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        products = super(ProductProduct, self).name_search(name, args, operator, limit)
+        categ_id = self._context.get('categ_id', False)
+        if categ_id:
+            products = self.env['product.template'].search([('categ_id', '=', self._context['categ_id'])]).name_get()
+
+        return products

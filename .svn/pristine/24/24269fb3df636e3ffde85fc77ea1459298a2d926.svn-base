@@ -1,0 +1,23 @@
+# -*- coding: utf-8 -*-
+
+from odoo import models, fields, api, _
+
+class ServiceBooking(models.Model):
+    _name = 'service.booking'
+
+    name = fields.Char("Name", default="New")
+    config_id = fields.Many2one('pos.config', "Config")
+    partner_id = fields.Many2one('res.partner', "Partner")
+    time_from = fields.Datetime("Time From")
+    time_to = fields.Datetime("Time To")
+    shop_bed_id = fields.Many2one('crm.shop.bed', string="Bed")
+    note = fields.Char("Note")
+    service_ids = fields.Many2many('product.product', string="Service")
+    employee_ids = fields.Many2many('hr.employee', string="Employee")
+    state = fields.Selection([('draft', "Draft"), ('confirmed', "Confirmed"), ('done', "Done"), ('cancel', "Cancel")])
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('service.booking') or _('New')
+        return super(ServiceBooking, self).create(vals)

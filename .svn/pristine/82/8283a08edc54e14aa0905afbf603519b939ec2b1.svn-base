@@ -1,0 +1,24 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models, SUPERUSER_ID, _
+from datetime import date
+from odoo.exceptions import UserError, except_orm, MissingError, ValidationError
+
+
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    @api.model
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        products = super(ProductProduct, self).name_search(name, args, operator, limit)
+        categ_id = self._context.get('categ_id', False)
+        if categ_id:
+            products = self.env['product.product'].search(['|', ('default_code', '=', name), ('name', 'ilike', name), ('categ_id', '=', self._context['categ_id']), ('available_in_pos', '=', True)]).name_get()
+
+        return products
+
+
+class ProductTemplate(models.Model):
+    _inherit = "product.template"
+
+    x_is_massage = fields.Boolean('Is Massage', default=False)
+    x_is_injection = fields.Boolean('Is Injection', default=False)
